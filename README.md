@@ -70,6 +70,14 @@ Test if you can pull and run a `hell-world` image
     ./scripts/kafka/setup_spooldir_connectors.sh
 ```
 
+Check if the data points are there (press Ctrl+C to quit)
+```
+    ./scripts/kafka/get_topic_info.sh topic_airports
+    ./scripts/kafka/get_topic_info.sh topic_counties
+    ./scripts/kafka/get_topic_info.sh topic_arttoarp
+    ./scripts/kafka/get_topic_info.sh topic_dailyc19
+```
+
 2. Reviewing Kafka topics
 
 Navigate to `http://localhost:9021`, select `Topics`, then select any of `topic_airports`, `topic_arptoarp`, `topic_counties`, `topic_daily19`.
@@ -109,7 +117,7 @@ Create a new dashboard with a panel to display first 10 rows in the database.. S
     SELECT NOW() AS time, * FROM topic_dailyc19 LIMIT 10;
 ```
 
-Design another paenl 
+Design another panel 
 
 ```
     SELECT 
@@ -162,3 +170,28 @@ And the final panel, choosing Bar Gauge
 
 The full config can be viewed in [grafana.json](./conf/grafana.json).
 
+# D. Perform computations to find nearby airports for each county
+
+1. Setup a Spark master and three slaves
+
+```
+    ./scripts/spark/start_first_time.sh
+```
+
+2. Run the Spark app
+
+```
+    ./scripts/spark/run_spark_app.sh
+```
+
+3. Push the results into the `topic_ctytoarp`
+
+```
+    ./scripts/spark/setup_spooldir_connector.sh
+```
+
+Check if the data points are there (press Ctrl+C to quit)
+
+```
+    ./scripts/kafka/get_topic_info.sh topic_ctytoarp
+```

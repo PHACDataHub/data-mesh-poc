@@ -1,5 +1,8 @@
 #!/bin/bash
 
+cp data/csv/ctytoarp.csv data/unprocessed/.;
+chmod a+rw data/unprocessed/ctytoarp.csv;
+
 connect=localhost:8083
 internal_broker=broker:29092
 
