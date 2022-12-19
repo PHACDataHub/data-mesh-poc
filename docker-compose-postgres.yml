@@ -1,0 +1,51 @@
+version: "3.8"
+
+##############################################################################
+#
+# services
+# - postgres
+# - grafana
+#
+##############################################################################
+services:
+
+  ####################
+  # postgres
+  ####################
+  postgres:
+    # *-----------------------------*
+    # To connect to the DB: 
+    #   docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
+    # *-----------------------------*
+    image: postgres:12
+    container_name: postgres
+    networks:
+      - backend
+    ports:
+      - 5432:5432
+    environment:
+     - POSTGRES_USER=postgres
+     - POSTGRES_PASSWORD=postgres
+    restart: always
+
+  ####################
+  # grafana
+  ####################
+  grafana: 
+    image: grafana/grafana-enterprise:9.3.1-ubuntu
+    networks:
+      - backend
+    ports:
+      - 3000:3000
+    restart: always
+
+################################################################################
+#
+# networks
+# - backend
+#
+################################################################################
+networks:
+  backend:
+    name: backend
+    external: true
