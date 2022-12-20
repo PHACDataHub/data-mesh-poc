@@ -62,6 +62,26 @@ Test if you can pull and run a `hell-world` image
     ./scripts/kafka/cleanup.sh
 ```
 
+***Note: sometime the `connect` plugins are not propertly installed. You might need to check `connect` logs.***
+
+```
+    docker-compose -f docker-compose-kafka.yml logs connect -f
+```
+
+scan for 
+```
+    connect  | Unable to find a component 
+    connect  |  
+    connect  | Error: Component not found, specify either valid name from Confluent Hub in format: <owner>/<name>:<version:latest> or path to a local file 
+```
+
+and then install them manually (for example for the `neo4j` plugin)
+
+```
+    docker exec -it connect bash
+    confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:5.0.2
+```
+
 # C. US Covid Daily dataset, Airports & Counties & Airport-to-Airport Passenger Traffic master datasets
 
 1. Setup the connectors and topics to read csv data files
