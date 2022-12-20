@@ -1,0 +1,87 @@
+{
+  "title": "US Covid 19",
+  "version": "2.2",
+  "settings": {
+    "pagenumber": 0,
+    "editable": true,
+    "fullscreenEnabled": false,
+    "parameters": {}
+  },
+  "pages": [
+    {
+      "title": "Meta & Stats",
+      "reports": [
+        {
+          "title": "Hi there 👋",
+          "query": "**This is US Daily Covid 19 dashboard!** \n \n",
+          "width": 3,
+          "height": 2,
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "selection": {},
+          "settings": {}
+        },
+        {
+          "title": "Meta Graph",
+          "query": "CALL apoc.meta.graph\n\n",
+          "width": 7,
+          "height": 2,
+          "x": 3,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "Airport": "(label)",
+            "County": "name",
+            "DailyC19": "name"
+          },
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Data statistics",
+          "query": "Call apoc.meta.data();\n\n\n",
+          "width": 10,
+          "height": 3,
+          "x": 0,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {}
+        }
+      ]
+    },
+    {
+      "title": "California Cases",
+      "reports": [
+        {
+          "title": "On March 31, 2022",
+          "query": "MATCH (d:DailyC19) WHERE d.date = '2020-03-31' AND d.state = \"California\" RETURN d.county AS county, d.cases AS cases, d.deaths AS deaths\n\n\n",
+          "width": 3,
+          "height": 5,
+          "x": 0,
+          "y": 0,
+          "type": "table",
+          "selection": {},
+          "settings": {}
+        },
+        {
+          "title": "California Counties",
+          "query": "\nMATCH (c:County) WHERE c.state_name = \"California\" RETURN c\n\n",
+          "width": 7,
+          "height": 5,
+          "x": 3,
+          "y": 0,
+          "type": "map",
+          "selection": {
+            "County": "county_ascii"
+          },
+          "settings": {}
+        }
+      ]
+    }
+  ],
+  "parameters": {},
+  "extensions": {}
+}

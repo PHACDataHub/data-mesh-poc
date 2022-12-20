@@ -33,6 +33,7 @@ services:
   ####################
   grafana: 
     image: grafana/grafana-enterprise:9.3.1-ubuntu
+    container_name: grafana
     networks:
       - backend
     ports:

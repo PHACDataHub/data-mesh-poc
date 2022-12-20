@@ -31,7 +31,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "BK-ToUc4z"
+        "uid": "_z9-w_54z"
       },
       "fieldConfig": {
         "defaults": {
@@ -82,7 +82,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "BK-ToUc4z"
+            "uid": "_z9-w_54z"
           },
           "editorMode": "code",
           "format": "table",
@@ -114,7 +114,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "BK-ToUc4z"
+        "uid": "_z9-w_54z"
       },
       "fieldConfig": {
         "defaults": {
@@ -165,7 +165,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "BK-ToUc4z"
+            "uid": "_z9-w_54z"
           },
           "editorMode": "builder",
           "format": "table",
@@ -247,7 +247,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "BK-ToUc4z"
+        "uid": "_z9-w_54z"
       },
       "fieldConfig": {
         "defaults": {
@@ -324,7 +324,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "BK-ToUc4z"
+            "uid": "_z9-w_54z"
           },
           "editorMode": "code",
           "format": "table",
@@ -356,7 +356,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "BK-ToUc4z"
+        "uid": "_z9-w_54z"
       },
       "fieldConfig": {
         "defaults": {
@@ -404,7 +404,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "BK-ToUc4z"
+            "uid": "_z9-w_54z"
           },
           "editorMode": "code",
           "format": "table",
@@ -449,6 +449,6 @@
   "timezone": "",
   "title": "Dashboard",
   "uid": "sL-H0U54z",
-  "version": 5,
+  "version": 2,
   "weekStart": ""
 }

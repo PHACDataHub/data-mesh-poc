@@ -24,6 +24,7 @@ do
     key_fields="${!key_fields_var}"
     cast_types_var="cast_types_"${item}
     cast_types="${!cast_types_var}"
+    echo ${item}${key_fields} ${cast_types}
 
     curl -i -X PUT -H "Accept:application/json" \
         -H  "Content-Type:application/json" http://${connect}/connectors/spooldir_${item}/config \
@@ -33,7 +34,7 @@ do
             "input.path":"/data/unprocessed",
             "finished.path":"/data/processed",
             "error.path":"/data/error",
-            "input.file.pattern":"'${item}.csv'",
+            "input.file.pattern":"'${item}'\\.csv",
             "schema.generation.enabled":"true",
             "schema.generation.key.fields":"'${key_fields}'",
             "csv.first.row.as.header":"true",
@@ -42,6 +43,7 @@ do
             "transforms.castTypes.spec":"'${cast_types}'"
             }'
 done
+
 
 echo "Listing all connectors ...";
 curl -s ${connect}/connectors | jq '.[]'

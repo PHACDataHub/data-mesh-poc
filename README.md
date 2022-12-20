@@ -92,7 +92,7 @@ Select `Messages`, then on `offset` (next to `Jump to offset`) select `0` to sta
 4. Setting up JDBC connector to consume Kafka messages from `topic_daily19`
 
 ```
-    ./scripts/postgres/setup_jdbc_connector.sh
+    ./scripts/postgres/setup_kafka_connector.sh
 ```
 
 5. Review imported messages in PorgreSQL database
@@ -107,7 +107,7 @@ Select `Messages`, then on `offset` (next to `Jump to offset`) select `0` to sta
 
 Open browser at `http://localhost:3000`, then use `admin/admin` for login first time.
 
-Create a data source by select `Configuration` on the left menu bar, select `PostgreSQL`, then `localhost:5432`, database `postgres`, username/password as `postgres` (for default). Disable TSL for now.
+Create a data source by select `Configuration` on the left menu bar, select `PostgreSQL`, then `postgres:5432`, database `postgres`, username/password as `postgres` (for default). Disable TSL for now.
 
 7. Create dashboards in Grafana to view `US Covid Daily` data
 
@@ -187,7 +187,7 @@ The full config can be viewed in [grafana.json](./conf/grafana.json).
 3. Push the results into the `topic_ctytoarp`
 
 ```
-    ./scripts/spark/setup_spooldir_connector.sh
+    ./scripts/spark/setup_kafka_connector.sh
 ```
 
 Check if the data points are there (press Ctrl+C to quit)
@@ -195,3 +195,31 @@ Check if the data points are there (press Ctrl+C to quit)
 ```
     ./scripts/kafka/get_topic_info.sh topic_ctytoarp
 ```
+
+# E. Neo4j for data science, access and visualization
+
+1. Setup a Neo4j and neodash
+
+```
+    ./scripts/neo4j/start_first_time.sh
+```
+
+2. Setup the database
+
+```
+    ./scripts/neo4j/setup_database.sh
+```
+
+3. Connect to Kafka to receive all data
+
+```
+    ./scripts/neo4j/setup_kafka_connector.sh
+```
+
+4. Open Neo4j browser
+
+Open browser at `http://localhost:7474`, then use `neo4j/phac2022` for login.
+
+5. Using Neodash
+
+Open browser at `http://localhost:5005`, then connect to existing dashboard for preview.

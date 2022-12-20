@@ -1,0 +1,15 @@
+CREATE CONSTRAINT uid_county FOR (county:County) REQUIRE county.county_fips IS UNIQUE;
+CREATE INDEX state_id_county FOR (n:County) ON (n.state_id);
+CREATE INDEX state_name_county FOR (n:County) ON (n.state_name);
+CREATE INDEX name_county FOR (n:County) ON (n.county_ascii);
+CREATE POINT INDEX location_county FOR (n:County) ON (n.location);
+CREATE CONSTRAINT uid_airport FOR (airport:Airport) REQUIRE airport.ident IS UNIQUE;
+CREATE INDEX iata_airport FOR (n:Airport) ON (n.iata_code);
+CREATE INDEX name_airport FOR (n:Airport) ON (n.name);
+CREATE POINT INDEX location_airport FOR (n:Airport) ON (n.location);
+CREATE INDEX cid_dailyc19 FOR (n:DailyC19) ON (n.date, n.fips);
+CREATE INDEX date_dailyc19 FOR (n:DailyC19) ON (n.date);
+CREATE INDEX fips_dailyc19 FOR (n:DailyC19) ON (n.fips);
+CREATE INDEX state_dailyc19 FOR (n:DailyC19) ON (n.state);
+CREATE INDEX cases_dailyc19 FOR (n:DailyC19) ON (n.cases);
+CREATE INDEX deaths_dailyc19 FOR (n:DailyC19) ON (n.deaths);

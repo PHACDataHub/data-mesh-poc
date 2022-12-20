@@ -22,6 +22,7 @@ do
 done
 
 chmod -R a+rw vol*
+sudo chmod -R a+rw plugins
 sudo chmod -R a+rw data
 
 echo 'Folders for spooldir data created ✅'
