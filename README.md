@@ -109,13 +109,41 @@ Select `Messages`, then on `offset` (next to `Jump to offset`) select `0` to sta
 ```
     ./scripts/postgres/start_first_time.sh
 ```
-4. Setting up JDBC connector to consume Kafka messages from `topic_daily19`
+
+4. Adding Kafka Streams
+
+```
+    CREATE STREAM stream_dailyc19 (
+        date VARCHAR,
+        fips VARCHAR,
+        county VARCHAR,
+        state VARCHAR,
+        cases BIGINT,
+        deaths BIGINT
+    ) WITH (
+        KAFKA_TOPIC='topic_dailyc19',
+        KEY_FORMAT='AVRO',
+        VALUE_FORMAT='AVRO',
+        KEY_SCHEMA_ID=3,
+        VALUE_SCHEMA_ID=8
+    );
+```
+
+```
+    CREATE STREAM california_covid
+    AS SELECT 
+        date, fips, county, cases, deaths
+    FROM STREAM_DAILYC19
+    WHERE state = 'California'
+    EMIT CHANGES;
+
+```
+
+5. Setting up JDBC connector to consume Kafka messages from `topic_daily19` and review imported messages in PorgreSQL database
 
 ```
     ./scripts/postgres/setup_kafka_connector.sh
 ```
-
-5. Review imported messages in PorgreSQL database
 
 ```
     docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
