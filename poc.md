@@ -35,3 +35,15 @@ Data Mesh Proof of Concept
 # 9. Docker sets
 
 ![Docker sets](./images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.009.png)
+
+# 10. Delivering Quality Data - Five Principles
+
+![Docker sets](./images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.010.png)
+
+# 11. Delivering Quality Data - Data Domain
+
+![Docker sets](./images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.011.png)
+
+# 12. Delivering Quality Data - Data Federation
+
+![Docker sets](./images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.012.png)
