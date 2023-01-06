@@ -1,6 +1,6 @@
 Data Mesh Proof of Concept
 
-# 1. The imaginative case
+# 1. Data Mesh short summary
 
 [Data Mesh short summary](./dmss.md)
 
