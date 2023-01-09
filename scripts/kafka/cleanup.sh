@@ -1,11 +1,17 @@
 #!/bin/bash
 
-./scripts/kafka/stop.sh
+CURRENT_UID=$(id -u)
+CURRENT_GID=$(id -g)
 
-CURRENT_UID=$(id -u):$(id -g) docker compose -f docker-compose-kafka.yml down
+./scripts/kafka/stop.sh
+echo ''
+
+echo "Shutting down containers...";
+docker compose -f docker-compose-kafka.yml down
+echo "Containers shutdown ✅";
+echo ''
 
 echo "Removing instance files ...";
-sudo rm -rf vol*
-sudo rm -rf data/error data/unprocessed data/processed
-
+rm -rf vol*
+rm -rf data/error data/unprocessed data/processed
 echo "Instance files removed ✅";

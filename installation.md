@@ -114,6 +114,8 @@ Select `Messages`, then on `offset` (next to `Jump to offset`) select `0` to sta
 
 Open Kafka Control Center at `http://localhost:9021`, `ksql`, then use the `Editor` to create streams as follow.
 
+***Verify if the values of KEY_SCHEMA_ID and VALUE_SCHEMA_ID are the same as in the `topic_dailyc19` topic***
+
 ```
     CREATE STREAM stream_dailyc19 (
         date VARCHAR,
@@ -126,15 +128,14 @@ Open Kafka Control Center at `http://localhost:9021`, `ksql`, then use the `Edit
         KAFKA_TOPIC='topic_dailyc19',
         KEY_FORMAT='AVRO',
         VALUE_FORMAT='AVRO',
-        KEY_SCHEMA_ID=3,
-        VALUE_SCHEMA_ID=8
+        KEY_SCHEMA_ID=1
     );
 ```
 
 ```
     CREATE STREAM california_covid
     AS SELECT 
-        date, fips, county, cases, deaths
+        ROWKEY, date, fips, county, cases, deaths
     FROM STREAM_DAILYC19
     WHERE state = 'California'
     EMIT CHANGES;
@@ -151,6 +152,7 @@ Open Kafka Control Center at `http://localhost:9021`, `ksql`, then use the `Edit
     docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
     postgres=# \dt
     postgres=# SELECT * FROM topic_dailyc19 FETCH FIRST 10 ROWS ONLY;
+    postgres=# SELECT * FROM "CALIFORNIA_COVID" FETCH FIRST 10 ROWS ONLY;
 ```
 
 6. Configure Grafana to use PostgreSQL instance
@@ -158,6 +160,13 @@ Open Kafka Control Center at `http://localhost:9021`, `ksql`, then use the `Edit
 Open browser at `http://localhost:3000`, then use `admin/admin` for login first time.
 
 Create a data source by select `Configuration` on the left menu bar, select `PostgreSQL`, then `postgres:5432`, database `postgres`, username/password as `postgres` (for default). Disable TSL for now.
+
+***If the connection to Grafana fails (nothing show on the browser) then stop/restart might help***
+
+```
+    ./scripts/postgres/stop.sh
+    ./scripts/postgres/start_again.sh
+```
 
 7. Create dashboards in Grafana to view `US Covid Daily` data
 

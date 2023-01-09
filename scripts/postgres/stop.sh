@@ -1,7 +1,8 @@
 #!/bin/bash
 
+CURRENT_UID=$(id -u)
+CURRENT_GID=$(id -g)
+
 echo "Stopping all services ...";
-
-CURRENT_UID=$(id -u):$(id -g) docker compose -f docker-compose-postgres.yml stop
-
+docker compose -f docker-compose-postgres.yml stop
 echo "All services are stopped ✅";
