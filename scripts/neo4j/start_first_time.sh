@@ -1,4 +1,8 @@
 #!/bin/bash
 
+CURRENT_UID=$(id -u)
+CURRENT_GID=$(id -g)
+
 echo "Start all services ...";
-CURRENT_UID=$(id -u):$(id -g) docker compose -f docker-compose-neo4j.yml up -d
+docker compose -f docker-compose-neo4j.yml up -d
+echo "All services are started ✅";
