@@ -17,6 +17,6 @@ echo "Containers shutdown ✅";
 echo ''
 
 echo "Removing instance files ...";
-rm -rf vol*
-rm -rf data/error data/unprocessed data/processed
+sudo rm -rf vol*
+sudo rm -rf data/error data/unprocessed data/processed
 echo "Instance files removed ✅";
