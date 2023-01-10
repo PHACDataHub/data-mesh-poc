@@ -2,7 +2,7 @@
   "title": "US Covid 19",
   "version": "2.2",
   "settings": {
-    "pagenumber": 2,
+    "pagenumber": 4,
     "editable": true,
     "fullscreenEnabled": false,
     "parameters": {}
@@ -68,21 +68,21 @@
         },
         {
           "title": "California Counties",
-          "query": "\nMATCH (c:County) WHERE c.state_name = \"California\" RETURN c\n\n",
+          "query": "MATCH (c:County) WHERE c.state_name = \"California\" RETURN c",
           "width": 7,
           "height": 5,
           "x": 3,
           "y": 0,
           "type": "map",
           "selection": {
-            "County": "county_ascii"
+            "County": "county_full"
           },
           "settings": {}
         }
       ]
     },
     {
-      "title": "Experiments",
+      "title": "Covid cases",
       "reports": [
         {
           "title": "Snohomish County, WA vs Los Angeles County, CA",
@@ -113,6 +113,48 @@
           "x": 0,
           "y": 2,
           "type": "graph",
+          "selection": {
+            "County": "county_full",
+            "Airport": "name"
+          },
+          "settings": {
+            "nodePositions": {}
+          }
+        }
+      ]
+    },
+    {
+      "title": "Connected Counties",
+      "reports": [
+        {
+          "title": "Snohomish's connected counties via air routes",
+          "query": "MATCH (d1:County {county_fips: \"53061\"})-[r1:C2A]-(a1:Airport)-[r2:A2A]-(a2:Airport)-[r3:C2A]-(d2:County)\n    RETURN d1, r1, a1, r2, a2, r3, d2\n",
+          "width": 10,
+          "height": 4,
+          "x": 0,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "County": "county_full",
+            "Airport": "municipality"
+          },
+          "settings": {
+            "nodePositions": {}
+          }
+        }
+      ]
+    },
+    {
+      "title": "Connected Counties",
+      "reports": [
+        {
+          "title": "Snohomish's air routes to Los Angeles and Orange Counties",
+          "query": "\nMATCH (d1:County {county_fips: \"53061\"})-[r1:C2A]-(a1:Airport)-[r2:A2A]-(a2:Airport)-[r3:C2A]-(d2:County)\nWHERE d2.county_fips IN [\"06037\", \"06059\"]\nRETURN d1, r1, a1, r2, a2, r3, d2\n\n\n\n\n\n\n\n",
+          "width": 10,
+          "height": 5,
+          "x": 0,
+          "y": 0,
+          "type": "map",
           "selection": {
             "County": "county_full",
             "Airport": "name"
