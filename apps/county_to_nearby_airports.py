@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from math import radians, cos, sin, asin, sqrt
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, FloatType, IntegerType, StringType
@@ -26,7 +27,7 @@ df_counties = spark.read \
     .schema(c_schema) \
     .load("/opt/spark/data/csv/counties.csv")
 
-print('Summarizing counties ... ')
+print('Showing counties ... ')
 # df_counties.summary().show()
 df_counties.show()
 
@@ -54,7 +55,7 @@ df_airports = spark.read \
 print('Filtering airports ... ')    
 df_airports = df_airports.filter(df_airports.iso_country == 'US').filter(df_airports.iata_code.isNotNull())
 
-print('Summarizing airports ... ')
+print('Showing airports ... ')
 # df_airports.summary().show()
 df_airports.show()
 
@@ -83,4 +84,5 @@ with open('/opt/spark/data/csv/ctytoarp.csv', mode='w', encoding='utf-8') as out
     out_file.write('fips,iata,distance\n')
     for row in df_cj.collect():
         out_file.write(f"{row['fips']},{row['iata']},{row['distance']}\n")
-print('Done.')
+
+sys.exit('Done')

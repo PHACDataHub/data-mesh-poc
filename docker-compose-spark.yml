@@ -13,7 +13,8 @@ services:
   # spark (master)
   ####################
   spark:
-    image: bitnami/spark:3.3.1
+    # image: bitnami/spark:3.3.1
+    image: apache/spark-py:v3.3.1
     hostname: spark
     container_name: spark
     environment:
@@ -38,7 +39,8 @@ services:
   # spark-worker
   ####################
   spark-worker:
-    image: bitnami/spark:3.3.1
+    # image: bitnami/spark:3.3.1
+    image: apache/spark-py:v3.3.1
     # container_name: spark-woker
     networks:
       - backend

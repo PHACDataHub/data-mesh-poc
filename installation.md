@@ -84,6 +84,8 @@ and then install them manually (for example for the `neo4j` plugin)
 
 # C. US Covid Daily dataset, Airports & Counties & Airport-to-Airport Passenger Traffic master datasets
 
+***Ensure that `jq` is installed.*** `sudo apt install jq` on Ubuntu and `brew install jq` on Mac OS.
+
 1. Setup the connectors and topics to read csv data files
 
 ```

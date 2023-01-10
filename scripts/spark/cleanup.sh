@@ -1,5 +1,8 @@
 #!/bin/bash
 
+./scripts/spark/stop.sh
+echo ''
+
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 

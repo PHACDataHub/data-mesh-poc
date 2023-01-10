@@ -20,7 +20,7 @@ services:
   # zookeeper
   ####################
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.3.0
+    image: confluentinc/cp-zookeeper:7.3.1
     hostname: zookeeper
     container_name: zookeeper
     networks:
@@ -38,7 +38,7 @@ services:
     restart: always
 
   broker:
-    image: confluentinc/cp-server:7.3.0
+    image: confluentinc/cp-server:7.3.1
     hostname: broker
     container_name: broker
     depends_on:
@@ -80,7 +80,7 @@ services:
   # schema-registry
   ####################
   schema-registry:
-    image: confluentinc/cp-schema-registry:7.3.0
+    image: confluentinc/cp-schema-registry:7.3.1
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -101,7 +101,7 @@ services:
   # connect
   ####################
   connect:
-    image: confluentinc/cp-server-connect:7.3.0
+    image: confluentinc/cp-server-connect:7.3.1
     hostname: connect
     container_name: connect
     depends_on:
@@ -155,14 +155,14 @@ services:
         sleep infinity
     volumes:
       - $PWD/data:/data
-      - $PWD/plugins:/usr/share/confluent-hub-components
+      - $PWD/kafka/plugins:/usr/share/confluent-hub-components
     restart: always
 
   ####################
   # control-center
   ####################
   control-center:
-    image: confluentinc/cp-enterprise-control-center:7.3.0
+    image: confluentinc/cp-enterprise-control-center:7.3.1
     hostname: control-center
     container_name: control-center
     depends_on:
@@ -193,7 +193,7 @@ services:
   # ksqldb-server
   ####################
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:7.3.0
+    image: confluentinc/cp-ksqldb-server:7.3.1
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -224,7 +224,7 @@ services:
   # ksqldb-cli
   ####################
   ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:7.3.0
+    image: confluentinc/cp-ksqldb-cli:7.3.1
     container_name: ksqldb-cli
     depends_on:
       - broker
@@ -240,7 +240,7 @@ services:
   # rest-proxy
   ####################
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:7.3.0
+    image: confluentinc/cp-kafka-rest:7.3.1
     depends_on:
       - broker
       - schema-registry
@@ -277,6 +277,7 @@ services:
         apk add jq; 
         while [ 1 -eq 1 ];do sleep 60;done
     restart: always
+    # platform: linux/amd64
 
 ################################################################################
 #

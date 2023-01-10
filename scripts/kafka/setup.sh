@@ -2,12 +2,15 @@
 
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
+OSTYPE=$(uname -s)
 
-echo 'Add docker user to my group ...'
-docker_user=root
-sudo usermod -a -G $CURRENT_GID "${docker_user}"
-echo 'Docker user added to my group ✅'
-echo ''
+if [[ $OSTYPE == 'Linux' ]]; then
+    echo 'Add docker user to my group ...'
+    docker_user=root
+    sudo usermod -a -G $CURRENT_GID "${docker_user}"
+    echo 'Docker user added to my group ✅'
+    echo ''
+fi
 
 echo 'Creating volumes for zookeeper and broker(s) ...'
 for item in vol1/zk-data vol2/zk-txn-logs vol3/kafka-data
@@ -34,6 +37,7 @@ echo 'Folders for spooldir data created ✅'
 echo ''
 
 echo 'Copying data into for spooldir ...'
+cd data; tar xzvf data.tar.gz; cd ..;
 for item in counties airports arptoarp dailyc19
 do
     cp data/csv/${item}.csv data/unprocessed/.;
@@ -43,7 +47,7 @@ echo 'Folders for spooldir data created ✅'
 echo ''
 
 echo 'Setting permissions for plugins and data folders ...'
-for item in plugins data
+for item in data kafka/plugins
 do
     sudo chown -R $CURRENT_UID $item;
     sudo chgrp -R $CURRENT_GID $item;
