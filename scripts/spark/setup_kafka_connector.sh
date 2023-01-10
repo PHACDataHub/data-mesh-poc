@@ -5,6 +5,7 @@ chmod a+rw data/unprocessed/ctytoarp.csv;
 
 connect=localhost:8083
 internal_broker=broker:29092
+localhost_broker=localhost:9092
 
 echo "Listing all connectors ...";
 curl -s ${connect}/connectors | jq '.[]'
@@ -32,4 +33,12 @@ echo "Listing all connectors ...";
 curl -s ${connect}/connectors | jq '.[]'
 
 echo "Listing all topics ...";
-docker exec kafkacat kafkacat -b ${internal_broker} -q -L  -J | jq '.topics[].topic' | sort
+
+OSTYPE=$(uname -s)
+
+if [[ $OSTYPE == 'Linux' ]]; then
+    docker exec kafkacat kafkacat -b ${internal_broker} -q -L  -J | jq '.topics[].topic' | sort
+fi
+if [[ $OSTYPE == 'Darwin' ]]; then
+    kcat -b ${localhost_broker} -q -L  -J | jq '.topics[].topic' | sort
+fi

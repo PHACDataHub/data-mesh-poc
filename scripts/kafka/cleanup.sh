@@ -7,7 +7,12 @@ CURRENT_GID=$(id -g)
 echo ''
 
 echo "Shutting down containers...";
-docker compose -f docker-compose-kafka.yml down
+if [[ $OSTYPE == 'Linux' ]]; then
+    docker compose -f docker-compose-kafka.yml down
+fi
+if [[ $OSTYPE == 'Darwin' ]]; then
+    docker compose -f docker-compose-kafka-osx.yml down
+fi
 echo "Containers shutdown ✅";
 echo ''
 

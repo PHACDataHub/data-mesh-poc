@@ -1,5 +1,8 @@
 #!/bin/bash
 
+./scripts/postgres/stop.sh
+echo ''
+
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 
