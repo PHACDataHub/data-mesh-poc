@@ -273,8 +273,14 @@ Check if the data points are there (press Ctrl+C to quit)
 
 3. Connect to Kafka to receive all data
 
+First import all nodes
 ```
-    ./scripts/neo4j/setup_kafka_connector.sh
+    ./scripts/neo4j/setup_kafka_node_connector.sh
+```
+
+Wait until complete, then import relationships
+```
+    ./scripts/neo4j/setup_kafka_rels_connector.sh
 ```
 
 4. Open Neo4j browser
@@ -284,3 +290,19 @@ Open browser at `http://localhost:7474`, then use `neo4j/phac2022` for login.
 5. Using Neodash
 
 Open browser at `http://localhost:5005`, then connect to existing dashboard for preview.
+
+6. Queries
+
+250 days period
+```
+    MATCH (d:DailyC19) 
+        WHERE d.fips = "53061" 
+    RETURN DATE(d.date) AS date, d.cases AS cases, d.deaths AS deaths ORDER BY date SKIP 50 LIMIT 250
+```
+
+Air routes from Snohomish County
+```
+    MATCH (d1:County {county_fips: "53061"})-[r1:C2A]-(a1:Airport)-[r2:A2A]-(a2:Airport)-[r3:C2A]-(d2:County)
+    RETURN d1, r1, a1, r2, a2, r3, d2
+```
+
