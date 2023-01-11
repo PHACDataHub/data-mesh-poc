@@ -306,3 +306,10 @@ Air routes from Snohomish County
     RETURN d1, r1, a1, r2, a2, r3, d2
 ```
 
+Snohomish & Los Angeles Counties
+```
+    MATCH (d1:DailyC19 {fips: "53061"})
+    WHERE d1.date > "2020-03-31"
+    WITH d1 MATCH (d2:DailyC19 {fips: "6037", date: d1.date})
+    RETURN DATE(d1.date) AS date, d1.cases, d1.deaths, d2.cases, d2.deaths LIMIT 90
+```

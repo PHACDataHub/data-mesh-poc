@@ -2,7 +2,7 @@
   "title": "US Covid 19",
   "version": "2.2",
   "settings": {
-    "pagenumber": 4,
+    "pagenumber": 2,
     "editable": true,
     "fullscreenEnabled": false,
     "parameters": {}
@@ -86,9 +86,9 @@
       "reports": [
         {
           "title": "Snohomish County, WA vs Los Angeles County, CA",
-          "query": "MATCH (d1:DailyC19 {fips: \"53061\"})\n    WHERE d1.date > \"2020-03-31\"\n    WITH d1 MATCH (d2:DailyC19 {fips: \"6037\", date: d1.date})\n    RETURN DATE(d1.date) AS date, d1.cases, d1.deaths, d2.cases, d2.deaths LIMIT 90",
+          "query": "MATCH (d1:DailyC19 {fips: \"53061\"})\n    WHERE d1.date > \"2020-03-31\"\nWITH d1 MATCH (d2:DailyC19 {fips: \"06037\", date: d1.date})\nRETURN DATE(d1.date) AS date, d1.cases, d1.deaths, d2.cases, d2.deaths LIMIT 90",
           "width": 12,
-          "height": 2,
+          "height": 4,
           "x": 0,
           "y": 0,
           "type": "line",
@@ -103,22 +103,6 @@
             "nodePositions": {},
             "legend": true,
             "colors": "accent"
-          }
-        },
-        {
-          "title": "Snohomish's connected counties via air routes",
-          "query": "MATCH (d1:County {county_fips: \"53061\"})-[r1:C2A]-(a1:Airport)-[r2:A2A]-(a2:Airport)-[r3:C2A]-(d2:County)\n    RETURN d1, r1, a1, r2, a2, r3, d2\n\n\n",
-          "width": 12,
-          "height": 3,
-          "x": 0,
-          "y": 2,
-          "type": "graph",
-          "selection": {
-            "County": "county_full",
-            "Airport": "name"
-          },
-          "settings": {
-            "nodePositions": {}
           }
         }
       ]
