@@ -353,3 +353,36 @@ Sum up passenger traffic per air route for each connected county pairs
         {batchSize:1, parallel:false}
     )
 ```
+
+Setting valid date range (having Covid data) for each county
+```
+    MATCH (c:County)
+    WITH c
+        MATCH (d:DailyC19 {fips: c.county_fips})
+    WITH c, d.date AS date ORDER BY date ASC
+    WITH DISTINCT(c) AS c, COLLECT(date) AS dates
+    WITH c, HEAD(dates) AS min_date, HEAD(REVERSE(dates)) AS max_date
+        SET c.min_date = min_date, c.max_date = max_date
+```
+
+Compute correlation (based on sum of squares of dfference in cases as population percentage) of every connected county pairs.
+```
+    CALL apoc.periodic.iterate("
+        MATCH (c1:County)-[r:C2C_PT]-(c2:County)
+        WHERE c1.county_fips < c2.county_fips
+        RETURN c1, r, c2,
+            (CASE c1.min_date <= c2.min_date WHEN TRUE THEN c2.min_date ELSE c1.min_date END) AS min_date, 
+            (CASE c1.max_date <= c2.max_date WHEN TRUE THEN c1.max_date ELSE c2.max_date END) AS max_date
+    "," 
+        WITH c1, r, c2, min_date, max_date
+        MATCH (d1:DailyC19 {fips: c1.county_fips})
+            WHERE d1.date >= min_date AND d1.date <= max_date
+        WITH c1, r, c2, d1 
+            MATCH (d2:DailyC19 {fips: c2.county_fips, date: d1.date})
+        WITH c1, r, c2, d1.date AS date, (d1.cases*100.0/c1.population)-(d2.cases*100.0/c2.population) AS diff
+        WITH DISTINCT(c1) AS c1, r, c2, SQRT(SUM(diff*diff)/COUNT(diff)) AS sos
+            SET r.sos = sos
+    ",
+        {batchSize:1000, parallel:true}
+    )
+```

@@ -8,6 +8,10 @@ Data Mesh Proof of Concept
 
 [The imaginative case](./poc.md)
 
-# 3. Installation instructions
+# 3. Correlations in waves
+
+[Correlations in waves](./correlations.md)
+
+# 4. Installation instructions
 
 [Installation instructions](./installation.md)
