@@ -2,7 +2,7 @@
   "title": "US Covid 19",
   "version": "2.2",
   "settings": {
-    "pagenumber": 2,
+    "pagenumber": 3,
     "editable": true,
     "fullscreenEnabled": false,
     "parameters": {}
@@ -33,7 +33,8 @@
           "selection": {
             "Airport": "(label)",
             "County": "name",
-            "DailyC19": "name"
+            "DailyC19": "name",
+            "_Neodash_Dashboard": "name"
           },
           "settings": {
             "nodePositions": {}
@@ -112,8 +113,8 @@
       "reports": [
         {
           "title": "Snohomish's connected counties via air routes",
-          "query": "MATCH (d1:County {county_fips: \"53061\"})-[r1:C2A]-(a1:Airport)-[r2:A2A]-(a2:Airport)-[r3:C2A]-(d2:County)\n    RETURN d1, r1, a1, r2, a2, r3, d2\n",
-          "width": 10,
+          "query": "MATCH (d1:County {county_fips: \"53061\"})-[r1:C2A]-(a1:Airport)-[r2:A2A_PT]-(a2:Airport)-[r3:C2A]-(d2:County)\n    RETURN d1, r1, a1, r2, a2, r3, d2\n",
+          "width": 12,
           "height": 4,
           "x": 0,
           "y": 0,
@@ -129,18 +130,60 @@
       ]
     },
     {
-      "title": "Connected Counties",
+      "title": "Los Angeles & 4 Counties  ",
       "reports": [
         {
-          "title": "Snohomish's air routes to Los Angeles and Orange Counties",
-          "query": "\nMATCH (d1:County {county_fips: \"53061\"})-[r1:C2A]-(a1:Airport)-[r2:A2A]-(a2:Airport)-[r3:C2A]-(d2:County)\nWHERE d2.county_fips IN [\"06037\", \"06059\"]\nRETURN d1, r1, a1, r2, a2, r3, d2\n\n\n\n\n\n\n\n",
-          "width": 10,
-          "height": 5,
+          "title": "Los Angeles (CA), Mecklenburg (NC), St Tammany (LA), Lee (FL) and Fulton (GA)",
+          "query": "MATCH (d1:DailyC19 {fips: \"06037\"}), (c1:County {county_fips: \"06037\"})\n\tWHERE d1.date >= \"2020-04-01\"\nWITH d1, c1\n\tMATCH (d2:DailyC19 {fips: \"37119\", date: d1.date}), (c2:County {county_fips: \"37119\"})\nWITH d1, c1, d2, c2\n\tMATCH (d3:DailyC19 {fips: \"22103\", date: d1.date}), (c3:County {county_fips: \"22103\"})\nWITH d1, c1, d2, c2, d3, c3\n\tMATCH (d4:DailyC19 {fips: \"12071\", date: d1.date}), (c4:County {county_fips: \"12071\"})\nWITH d1, c1, d2, c2, d3, c3, d4, c4\n\tMATCH (d5:DailyC19 {fips: \"13121\", date: d1.date}), (c5:County {county_fips: \"13121\"})\nRETURN DATE(d1.date) AS date, \n    d1.cases*100.0/c1.population AS Los_Angeles_CA,\n    d2.cases*100.0/c2.population AS Mecklenburg_NC,\n    d3.cases*100.0/c3.population AS St_Tammany_LA,\n    d4.cases*100.0/c4.population AS Lee_FL,\n\td5.cases*100.0/c5.population AS Fulton_GA\n\tLIMIT 250",
+          "width": 12,
+          "height": 4,
           "x": 0,
           "y": 0,
-          "type": "map",
+          "type": "line",
           "selection": {
-            "County": "county_full",
+            "x": "date",
+            "value": [
+              "Los_Angeles_CA",
+              "Lee_FL",
+              "Mecklenburg_NC",
+              "St_Tammany_LA",
+              "Fulton_GA"
+            ]
+          },
+          "settings": {
+            "nodePositions": {}
+          }
+        }
+      ]
+    },
+    {
+      "title": "Correlated Counties of Los Angeles",
+      "reports": [
+        {
+          "title": "Correlated Counties of Los Angeles",
+          "query": "MATCH (c1:County {county_fips: \"06037\"})-[r:C2C_PT]-(c2:County)\n\tWHERE c1.community = c2.community\nRETURN c1, r, c2\n\n\n\n\n\n\n\n",
+          "width": 4,
+          "height": 3,
+          "x": 0,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "County": "county_ascii"
+          },
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Correlated Connected Counties of Los Angeles",
+          "query": "MATCH (c1:County {county_fips: \"06037\"})-[r1:C2A]-(a1:Airport)-[r2:A2A_PT]-(a2:Airport)-[r3:C2A]-(c2:County)\n\tWHERE c1.community = c2.community\nRETURN c1, r1, a1, r2, a2, r3, c2\n",
+          "width": 8,
+          "height": 4,
+          "x": 4,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "County": "county_ascii",
             "Airport": "name"
           },
           "settings": {

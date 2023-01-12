@@ -365,6 +365,11 @@ Setting valid date range (having Covid data) for each county
         SET c.min_date = min_date, c.max_date = max_date
 ```
 
+```
+    MATCH (c1:County)-[r:C2C_PT]-(c2:County)
+    REMOVE r.sos
+```
+
 Compute correlation (based on sum of squares of dfference in cases as population percentage) of every connected county pairs.
 ```
     CALL apoc.periodic.iterate("
@@ -381,8 +386,58 @@ Compute correlation (based on sum of squares of dfference in cases as population
             MATCH (d2:DailyC19 {fips: c2.county_fips, date: d1.date})
         WITH c1, r, c2, d1.date AS date, (d1.cases*100.0/c1.population)-(d2.cases*100.0/c2.population) AS diff
         WITH DISTINCT(c1) AS c1, r, c2, SQRT(SUM(diff*diff)/COUNT(diff)) AS sos
+        WITH r, sos            
+            WHERE sos <= 0.2
             SET r.sos = sos
     ",
         {batchSize:1000, parallel:true}
     )
+```
+
+7. Compute clusters
+
+```
+    MATCH (c:County)
+    REMOVE c.community;
+```
+
+```
+    CALL gds.graph.drop('correlatedCounties');
+```
+
+```
+    CALL gds.graph.project(
+        'correlatedCounties',
+        'County',
+        {
+            C2C_PT: {
+                orientation: 'UNDIRECTED'
+            }
+        },
+        {
+            relationshipProperties: 'sos'
+        }
+    )
+```
+
+```
+    CALL gds.louvain.write.estimate('correlatedCounties', { writeProperty: 'community' })
+    YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
+```
+
+```
+    CALL gds.louvain.write('correlatedCounties', { writeProperty: 'community' })
+    YIELD communityCount, modularity, modularities
+```
+
+```
+    MATCH (c:County)
+    WITH DISTINCT(c.community) AS community, COUNT(*) AS count
+    RETURN community, count
+```
+
+```
+    MATCH (c1:County)-[r1:C2A]-(a1:Airport)-[r2:A2A_PT]-(a2:Airport)-[r3:C2A]-(c2:County)
+	    WHERE c1.community = c2.community AND c1.county_fips IN ["06037"]
+    RETURN c1, r1, a1, r2, a2, r3, c2
 ```
