@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose-spark.yml
+    kompose.version: 1.27.0 (b0ed6a2c9)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: spark-worker
+  name: spark-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: spark-worker
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f ../docker-compose-spark.yml
+        kompose.version: 1.27.0 (b0ed6a2c9)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/backend: "true"
+        io.kompose.service: spark-worker
+    spec:
+      containers:
+        - env:
+            - name: SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED
+              value: "no"
+            - name: SPARK_MASTER_URL
+              value: spark://spark:7077
+            - name: SPARK_MODE
+              value: worker
+            - name: SPARK_RPC_AUTHENTICATION_ENABLED
+              value: "no"
+            - name: SPARK_RPC_ENCRYPTION_ENABLED
+              value: "no"
+            - name: SPARK_SSL_ENABLED
+              value: "no"
+            - name: SPARK_WORKER_CORES
+              value: "1"
+            - name: SPARK_WORKER_MEMORY
+              value: 1G
+          image: bitnami/spark:3.3.1
+          name: spark-worker
+          resources: {}
+          volumeMounts:
+            - mountPath: /opt/spark/data
+              name: spark-worker-claim0
+      restartPolicy: Always
+      volumes:
+        - name: spark-worker-claim0
+          persistentVolumeClaim:
+            claimName: spark-worker-claim0
+status: {}

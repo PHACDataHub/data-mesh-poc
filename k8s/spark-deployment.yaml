@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose-spark.yml
+    kompose.version: 1.27.0 (b0ed6a2c9)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: spark
+  name: spark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: spark
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f ../docker-compose-spark.yml
+        kompose.version: 1.27.0 (b0ed6a2c9)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/backend: "true"
+        io.kompose.service: spark
+    spec:
+      containers:
+        - env:
+            - name: SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED
+              value: "no"
+            - name: SPARK_MODE
+              value: master
+            - name: SPARK_RPC_AUTHENTICATION_ENABLED
+              value: "no"
+            - name: SPARK_RPC_ENCRYPTION_ENABLED
+              value: "no"
+            - name: SPARK_SSL_ENABLED
+              value: "no"
+          image: bitnami/spark:3.3.1
+          name: spark
+          ports:
+            - containerPort: 8080
+            - containerPort: 7077
+          resources: {}
+          volumeMounts:
+            - mountPath: /apps
+              name: spark-claim0
+            - mountPath: /opt/spark/data
+              name: spark-claim1
+      hostname: spark
+      restartPolicy: Always
+      volumes:
+        - name: spark-claim0
+          persistentVolumeClaim:
+            claimName: spark-claim0
+        - name: spark-claim1
+          persistentVolumeClaim:
+            claimName: spark-claim1
+status: {}

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
@@ -19,3 +20,5 @@ fi
 echo "All services are started ✅";
 
 ./scripts/kafka/wait_for_services.sh
+
+echo "test"

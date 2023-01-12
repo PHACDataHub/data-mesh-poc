@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose-kafka.yml
+    kompose.version: 1.27.0 (b0ed6a2c9)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: zookeeper
+  name: zookeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: zookeeper
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f ../docker-compose-kafka.yml
+        kompose.version: 1.27.0 (b0ed6a2c9)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/backend: "true"
+        io.kompose.service: zookeeper
+    spec:
+      containers:
+        - env:
+            - name: ZOOKEEPER_CLIENT_PORT
+              value: "2181"
+            - name: ZOOKEEPER_LOG4J_ROOT_LOGLEVEL
+              value: WARN
+            - name: ZOOKEEPER_TICK_TIME
+              value: "2000"
+            - name: ZOOKEEPER_TOOLS_LOG4J_LOGLEVEL
+              value: ERROR
+          image: confluentinc/cp-zookeeper:7.3.1
+          name: zookeeper
+          ports:
+            - containerPort: 2181
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/zookeeper/data
+              name: zookeeper-claim0
+            - mountPath: /var/lib/zookeeper/log
+              name: zookeeper-claim1
+      hostname: zookeeper
+      restartPolicy: Always
+      volumes:
+        - name: zookeeper-claim0
+          persistentVolumeClaim:
+            claimName: zookeeper-claim0
+        - name: zookeeper-claim1
+          persistentVolumeClaim:
+            claimName: zookeeper-claim1
+status: {}

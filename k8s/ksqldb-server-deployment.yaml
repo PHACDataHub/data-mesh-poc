@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose-kafka.yml
+    kompose.version: 1.27.0 (b0ed6a2c9)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ksqldb-server
+  name: ksqldb-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ksqldb-server
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f ../docker-compose-kafka.yml
+        kompose.version: 1.27.0 (b0ed6a2c9)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/backend: "true"
+        io.kompose.service: ksqldb-server
+    spec:
+      containers:
+        - env:
+            - name: KSQL_BOOTSTRAP_SERVERS
+              value: broker:29092
+            - name: KSQL_CACHE_MAX_BYTES_BUFFERING
+              value: "0"
+            - name: KSQL_CONFIG_DIR
+              value: /etc/ksql
+            - name: KSQL_CONSUMER_INTERCEPTOR_CLASSES
+              value: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+            - name: KSQL_HOST_NAME
+              value: ksqldb-server
+            - name: KSQL_KSQL_CONNECT_URL
+              value: http://connect:8083
+            - name: KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE
+              value: "true"
+            - name: KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE
+              value: "true"
+            - name: KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: KSQL_KSQL_SCHEMA_REGISTRY_URL
+              value: http://schema-registry:8081
+            - name: KSQL_LISTENERS
+              value: http://0.0.0.0:8088
+            - name: KSQL_LOG4J_ROOT_LOGLEVEL
+              value: WARN
+            - name: KSQL_PRODUCER_INTERCEPTOR_CLASSES
+              value: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+            - name: KSQL_TOOLS_LOG4J_LOGLEVEL
+              value: ERROR
+          image: confluentinc/cp-ksqldb-server:7.3.1
+          name: ksqldb-server
+          ports:
+            - containerPort: 8088
+          resources: {}
+      hostname: ksqldb-server
+      restartPolicy: Always
+status: {}
