@@ -3,6 +3,11 @@
 ./scripts/neo4j/stop.sh
 echo ''
 
-CURRENT_UID=$(id -u):$(id -g) docker compose -f docker-compose-neo4j.yml down
+CURRENT_UID=$(id -u)
+CURRENT_GID=$(id -g)
 
-sudo rm -rf neo4j
+echo "Shutting down containers...";
+docker compose -f docker-compose-neo4j.yml down
+echo "Containers shutdown ✅";
+
+sudo rm -rf data/neo4j

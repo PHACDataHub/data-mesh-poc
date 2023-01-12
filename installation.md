@@ -273,8 +273,14 @@ Check if the data points are there (press Ctrl+C to quit)
 
 3. Connect to Kafka to receive all data
 
+First import all nodes
 ```
-    ./scripts/neo4j/setup_kafka_connector.sh
+    ./scripts/neo4j/setup_kafka_node_connector.sh
+```
+
+Wait until complete, then import relationships
+```
+    ./scripts/neo4j/setup_kafka_rels_connector.sh
 ```
 
 4. Open Neo4j browser
@@ -284,3 +290,66 @@ Open browser at `http://localhost:7474`, then use `neo4j/phac2022` for login.
 5. Using Neodash
 
 Open browser at `http://localhost:5005`, then connect to existing dashboard for preview.
+
+Example queries
+
+250 days period
+```
+    MATCH (d:DailyC19) 
+        WHERE d.fips = "53061" 
+    RETURN DATE(d.date) AS date, d.cases AS cases, d.deaths AS deaths ORDER BY date SKIP 50 LIMIT 250
+```
+
+Air routes from Snohomish County
+```
+    MATCH (d1:County {county_fips: "53061"})-[r1:C2A]-(a1:Airport)-[r2:A2A]-(a2:Airport)-[r3:C2A]-(d2:County)
+    RETURN d1, r1, a1, r2, a2, r3, d2
+```
+
+Snohomish & Los Angeles Counties
+```
+    MATCH (d1:DailyC19 {fips: "53061"})
+    WHERE d1.date > "2020-03-31"
+    WITH d1 MATCH (d2:DailyC19 {fips: "06037", date: d1.date})
+    RETURN DATE(d1.date) AS date, d1.cases, d1.deaths, d2.cases, d2.deaths LIMIT 90
+```
+
+6. Preparing data for finding correlations
+
+Sum up quarterly passenger traffic to make it annual
+```
+    CALL apoc.periodic.iterate("
+        MATCH (a1:Airport)
+        RETURN a1 ORDER BY a1.ident
+    ","
+        WITH a1
+            MATCH (a1)-[r1:A2A]-(a2:Airport) 
+                WHERE a1.ident < a2.ident
+        WITH DISTINCT(a2) AS a2, SUM(r1.passengers)/COUNT(r1) AS passengers, a1
+            MERGE (a1)-[r:A2A_PT]-(a2)
+                SET r.passengers = passengers
+    ",
+        {batchSize:1, parallel:false}
+    )
+```
+
+Sum up passenger traffic per air route for each connected county pairs
+```
+    CALL apoc.periodic.iterate("
+        MATCH (c1:County)
+        RETURN c1 ORDER BY c1.county_fips
+    "," 
+        WITH c1
+            MATCH (c1)-[:C2A]-(a1:Airport)-[r1:A2A_PT]-(a2:Airport)-[:C2A]-(c2:County)
+                WHERE a1 <> a2 AND c1 <> c2 AND NOT((c1)-[:C2C_PT]-(c2))
+        WITH DISTINCT(c2) AS c2, SUM(r1.passengers) AS passengers, c1
+        WITH c1, c2, passengers
+            MERGE (c1)-[r:C2C_PT]-(c2)
+                SET r.passengers = passengers
+        WITH DISTINCT(c1) AS c1, SUM(passengers) AS passengers
+        WITH c1, passengers
+            SET c1.passengers = passengers
+    ",  
+        {batchSize:1, parallel:false}
+    )
+```
