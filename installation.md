@@ -441,3 +441,31 @@ Compute correlation (based on sum of squares of dfference in cases as population
 	    WHERE c1.community = c2.community AND c1.county_fips IN ["06037"]
     RETURN c1, r1, a1, r2, a2, r3, c2
 ```
+
+8. Correlated counties
+
+```
+    MATCH (c1:County {county_fips: "06037"})-[r:C2C_PT]-(c2:County)
+        WHERE r.sos <= 0.2
+    RETURN c2.county_fips, c2.county_ascii, c2.state_name, r.sos ORDER BY r.sos ASC
+```
+
+```
+    MATCH (d1:DailyC19 {fips: "06037"}), (c1:County {county_fips: "06037"})
+        WHERE d1.date >= "2020-04-01"
+    WITH d1, c1
+        MATCH (d2:DailyC19 {fips: "37119", date: d1.date}), (c2:County {county_fips: "37119"})
+    WITH d1, c1, d2, c2
+        MATCH (d3:DailyC19 {fips: "22103", date: d1.date}), (c3:County {county_fips: "22103"})
+    WITH d1, c1, d2, c2, d3, c3
+        MATCH (d4:DailyC19 {fips: "12071", date: d1.date}), (c4:County {county_fips: "12071"})
+    WITH d1, c1, d2, c2, d3, c3, d4, c4
+        MATCH (d5:DailyC19 {fips: "13121", date: d1.date}), (c5:County {county_fips: "13121"})
+    RETURN DATE(d1.date) AS date, 
+        d1.cases*100.0/c1.population AS Los_Angeles_CA,
+        d2.cases*100.0/c2.population AS Mecklenburg_NC,
+        d3.cases*100.0/c3.population AS St_Tammany_LA,
+        d4.cases*100.0/c4.population AS Lee_FL,
+        d5.cases*100.0/c5.population AS Fulton_GA
+        LIMIT 250
+```
