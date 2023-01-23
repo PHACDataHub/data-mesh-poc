@@ -6,7 +6,7 @@
     "editable": true,
     "fullscreenEnabled": true,
     "parameters": {
-      "neodash_county_county_ascii": "Los Angeles",
+      "neodash_county_county_ascii": "Dallas",
       "neodash_county_county_fips": "06037",
       "neodash_county_county_full": "",
       "neodash_start_date": "2020-04-01",
@@ -135,7 +135,7 @@
           "width": 12,
           "height": 4,
           "x": 0,
-          "y": 1,
+          "y": 2,
           "type": "line",
           "selection": {
             "x": "date",
@@ -154,9 +154,9 @@
         {
           "title": "Start date",
           "query": "RETURN true",
-          "width": 4,
+          "width": 3,
           "height": 1,
-          "x": 4,
+          "x": 3,
           "y": 0,
           "type": "select",
           "selection": {},
@@ -169,7 +169,7 @@
         {
           "title": "County",
           "query": "MATCH (n:`County`) \nWHERE toLower(toString(n.`county_ascii`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`county_ascii` as value ORDER BY size(toString(value)) ASC LIMIT 5",
-          "width": 4,
+          "width": 3,
           "height": 1,
           "x": 0,
           "y": 0,
@@ -185,10 +185,10 @@
         {
           "title": "Duration",
           "query": "RETURN true",
-          "width": 4,
+          "width": 3,
           "height": 1,
-          "x": 8,
-          "y": 0,
+          "x": 3,
+          "y": 1,
           "type": "select",
           "selection": {},
           "settings": {
@@ -196,6 +196,17 @@
             "entityType": "duration",
             "parameterName": "neodash_duration"
           }
+        },
+        {
+          "title": "Top 4 correlated connected counties",
+          "query": "MATCH (c:County {county_ascii: $neodash_county_county_ascii})-[r:C2C_PT]-(oc:County)\nRETURN oc.county_fips AS fips, oc.county_ascii AS county, oc.state_name AS state ORDER BY r.sos ASC\nLIMIT 4",
+          "width": 6,
+          "height": 2,
+          "x": 6,
+          "y": 0,
+          "type": "table",
+          "selection": {},
+          "settings": {}
         }
       ]
     },
