@@ -242,7 +242,7 @@ The input `csv` files for each connector can be uploaded into `/data/unprocessed
 
 Note that there is a single connector for each topic, but there is *no limit on the number of csv files can be uploaded to the folder, which effectively provides a method of **aggregation** for multiple sources.
 
-The *scheama for data in each connector is generated directly from the data* by specifying `"schema.generation.enabled":"true"`. We add some instructions 
+The *schema for data in each connector is generated directly from the data* by specifying `"schema.generation.enabled":"true"`. We add some instructions 
 - identify the key for the record: `key_fields_airports=ident`;
 - or to transform some of the fields (from string to float data type): `cast_types_airports=lat:float32,lng:float32`
 
@@ -367,7 +367,7 @@ Select the `Schema` tab then click on the `Key` then we should be able to see th
 
 Select the `Schema` tab then click on the `Value` then we should be able to see the schema for the value, which in this case consists all the fields.
 
-![Topic value schema](../images/screen-captured/control-center-topic-key-value.png)
+![Topic value schema](../images/screen-captured/control-center-topic-value-schema.png)
 
 Finally select the `Configuration` tab to see the topic configuration,
 
