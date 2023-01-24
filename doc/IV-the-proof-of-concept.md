@@ -7,7 +7,7 @@ The PoC is to provide an working system.to illustrate the key points of an possi
 - A group of software components as an implementation of Data Product principles representing daily COVID report gathering, storing, and monitoring by the State of California and the Federal CDC.
 - Another group of software components as another implementation of Data Product principles representing John Hopkins University's data science team collecting master datasets, processing big data, and performing Machine Learning (ML) tasks to find correlations between surges in paris ofcounties connected by air routes.
 
-![The Data Mesh approache](../images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.003.png)
+![The Data Mesh approach](../images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.003.png)
 
 Each of the sections below describes in details the architecture, functions, configurations, installations, and some functional tests of the subsystems. High-level descriptions accompanied by detailed explaination and concrete technical instructions. The technical instructions, although important for readers who want to repeat the deployment of the PoC on their own computers, local servers or (private) cloud, are not relevant for an overview and understanding of the subsystems.
 
@@ -177,7 +177,9 @@ and then install them manually (for example for the `neo4j` plugin)
 
 ## IV.4. The Daily Reports
 
-The PubSub model:
+![Daily Data](../images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.005.png)
+
+The Kafka Publish/Subscribe (PubSub) model:
 - simplify the topology of applications exchanging information with each other: instead of a $n \times n$ matrix, its a $n \times 1$ (applications-to-Kafka) and $1 \times n$ (Kafka-to-applications)
 - makes it easy to add or remove applications that want to exchange without affecting any of the others.
 
@@ -418,6 +420,8 @@ and finally, to perform (aggregation/transformation/)filtering only the messages
 
 ## IV.5 Monitoring the reports
 
+![Monitoring Reports](../images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.006.png)
+
 ### IV.5.a PostgreSQL and Grafana
 
 PostgreSQL, also known as Postgres, is a free and open-source relational database management system emphasizing extensibility and SQL compliance. It was originally named POSTGRES, referring to its origins as a successor to the Ingres database developed at the University of California, Berkeley. 
@@ -599,6 +603,8 @@ and one for California State
 
 ### IV.5.a Big data processing by Spark
 
+![Bid Data Processing](../images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.007.png)
+
 Apache Spark is an open-source unified analytics engine for large-scale data processing. Spark provides an interface for programming clusters with implicit data parallelism and fault tolerance.
 
 To perform computations to find nearby airports for each county, se setup a Spark cluster
@@ -648,6 +654,8 @@ To perform computations to find nearby airports for each county, se setup a Spar
 ```
 
 ### IV.5.b Surge Correlation Detection by Neo4j
+
+![Data Science](../images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.008.png)
 
 Neo4j is a graph database management system developed by Neo4j, Inc. Described by its developers as an ACID-compliant transactional database with native graph storage and processing.
 
