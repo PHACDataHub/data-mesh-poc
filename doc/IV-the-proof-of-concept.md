@@ -745,7 +745,7 @@ Setting valid date range (having Covid data) for each county
         SET c.min_date = min_date, c.max_date = max_date
 ```
 
-5. Once the data is ready, then we compute correlations among connectecd counties and cluster them
+5. Once the data is ready, then we compute [correlations among connectecd counties](#correlation) and cluster them
 
 **Compute correlation of every connected county pairs (c1, c2)**
 + *first, we take two counties that are connected by a direct air routes (each county is within 60 kilometers/ 40 miles (an usual driving distance) of one of the airports);*
