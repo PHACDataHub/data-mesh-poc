@@ -747,7 +747,21 @@ Setting valid date range (having Covid data) for each county
 
 5. Once the data is ready, then we compute correlations among connectecd counties and cluster them
 
-Compute correlation (based on sum of squares of dfference in cases as population percentage) of every connected county pairs.
+**Compute correlation of every connected county pairs (c1, c2)**
++ *first, we take two counties that are connected by a direct air routes (each county is within 60 kilometers/ 40 miles (an usual driving distance) of one of the airports);*
++ *second, we compare daily surge in each county in respect to its population as percentage (between 0% and 100%);*
++ *third, we compare the surges in population percentage between two counties by each day, take the square of each difference, then the sum of them, finally dividing by the number of days.*
+
+*The result should be less than a threshold. 0.2 is chosen for this experiment, which means that basically the difference in daily surge of the two counties should not exceed 0.45%*
+
+&nbsp;
+
+$$\frac{1}{max_{date} - min_{date} + 1} \sum_{i=min_{date}}^{max_{date}} \left( 100 \cdot \frac{c1_{cases}}{c1_{population}} - 100 \cdot \frac{c2_{cases}}{c2_{population}} \right)^2 \le 0.2$$
+
+&nbsp;
+
+Below is the implementation in `Cypher Query Language`, the query language of `Neo4j`:
+
 ```
     CALL apoc.periodic.iterate("
         MATCH (c1:County)-[r:C2C_PT]-(c2:County)
