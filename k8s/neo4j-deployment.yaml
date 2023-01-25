@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose-neo4j.yml
+    kompose.version: 1.27.0 (b0ed6a2c9)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: neo4j
+  name: neo4j
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: neo4j
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f ../docker-compose-neo4j.yml
+        kompose.version: 1.27.0 (b0ed6a2c9)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/backend: "true"
+        io.kompose.service: neo4j
+    spec:
+      containers:
+        - env:
+            - name: NEO4J_server_config_strict__validation_enabled
+              value: "false"
+            - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
+              value: "yes"
+            - name: NEO4J_AUTH
+              value: neo4j/phac2022
+            - name: NEO4J_PLUGINS
+              value: '["apoc", "graph-data-science"]'
+            - name: NEO4J_apoc_export_file_enabled
+              value: "true"
+            - name: NEO4J_apoc_import_file_enabled
+              value: "true"
+            - name: NEO4J_apoc_import_file_use__neo4j__config
+              value: "true"
+            - name: NEO4J_dbms_security_procedures_unrestricted
+              value: apoc.*,gds.*
+            - name: NEO4J_server_memory_heap.initial__size
+              value: 4G
+            - name: NEO4J_server_memory_heap_max__size
+              value: 8G
+            - name: NEO4J_server_memory_pagecache_size
+              value: 4G
+          image: neo4j:5.3.0
+          name: neo4j
+          ports:
+            - containerPort: 7474
+            - containerPort: 7473
+            - containerPort: 7687
+          resources: {}
+          volumeMounts:
+            - mountPath: /import
+              name: neo4j-claim0
+      restartPolicy: Always
+      volumes:
+        - name: neo4j-claim0
+          persistentVolumeClaim:
+            claimName: neo4j-claim0
+status: {}
