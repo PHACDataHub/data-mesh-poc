@@ -1,0 +1,21 @@
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - scripts/kafka/**
+
+name: 'Test kafka installation scripts'
+
+jobs:
+  linux-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Kafka installation scripts'
+        run: |
+          ./scripts/kafka/setup.sh
+          ./scripts/kafka/start_after_setup.sh
+          ./scripts/kafka/stop.sh
+          ./scripts/kafka/start_again.sh
+          ./scripts/kafka/cleanup.sh

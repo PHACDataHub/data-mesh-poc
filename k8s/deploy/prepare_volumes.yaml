@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  # Unique key of the Job instance
+  name: prepare-mesh-volumes
+spec:
+  template:
+    metadata:
+      name: prepare-mesh-volumes
+    spec:
+      containers:
+      - name: seed-kafka
+        image: northamerica-northeast1-docker.pkg.dev/phsx-sp-sde-muffledstarling/data-mesh-poc/seed:v0.4
+        volumeMounts:
+          - mountPath: /src/vol1
+            name: zookeeper-claim0
+          - mountPath: /src/vol2
+            name: zookeeper-claim1
+          - mountPath: /src/data
+            name: connect-claim0
+          - mountPath: /src/kafka/plugins
+            name: connect-claim1
+          - mountPath: /broker
+            name: broker-claim0
+      # Do not restart containers after they exit
+      restartPolicy: Never
+      volumes:
+        - name: broker-claim0
+          persistentVolumeClaim:
+            claimName: broker-claim0
+        - name: zookeeper-claim0
+          persistentVolumeClaim:
+            claimName: zookeeper-claim0
+        - name: zookeeper-claim1
+          persistentVolumeClaim:
+            claimName: zookeeper-claim1
+        - name: connect-claim0
+          persistentVolumeClaim:
+            claimName: connect-claim0
+        - name: connect-claim1
+          persistentVolumeClaim:
+            claimName: connect-claim1
+  # of retries before marking as failed.
+  backoffLimit: 4
