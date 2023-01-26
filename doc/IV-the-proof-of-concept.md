@@ -11,7 +11,7 @@ The PoC is to provide an working system.to illustrate the key points of an possi
 
 Each of the sections below describes in details the architecture, functions, configurations, installations, and some functional tests of the subsystems. High-level descriptions accompanied by detailed explaination and concrete technical instructions. The technical instructions, although important for readers who want to repeat the deployment of the PoC on their own computers, local servers or (private) cloud, are not relevant for an overview and understanding of the subsystems.
 
-*Note: If you are interested only in the technical installation of the PoC, please refer to* [installation](../installation.md).
+*Note: If you are interested only in the technical installation of the PoC, please refer to the [installation](../installation.md) document*.
 
 ## IV.1. System Requirements
 
