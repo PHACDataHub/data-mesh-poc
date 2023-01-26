@@ -65,7 +65,7 @@ Test if you can pull and run a `hell-world` image
 ***Note: sometime the `connect` plugins are not propertly installed. You might need to check `connect` logs.***
 
 ```
-    docker-compose -f docker-compose-kafka.yml logs connect -f
+    docker compose -f docker-compose-kafka.yml logs connect -f
 ```
 
 scan for 
