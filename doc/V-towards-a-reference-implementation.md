@@ -13,3 +13,5 @@
 ![Data Federation](../images/Data%20Mesh%20PoC/Data%20Mesh%20PoC.012.png)
 
 [Prev](./IV-the-proof-of-concept.md) | [Top](../README.md)
+
+*If you want to see how the above are realized, check this out:* [Data Mesh Reference Implementation](https://github.com/PHACDataHub/data-mesh-ref-impl).
