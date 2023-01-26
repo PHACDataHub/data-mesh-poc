@@ -14,4 +14,4 @@
 
 [Prev](./IV-the-proof-of-concept.md) | [Top](../README.md)
 
-Follow the [Data Mesh Reference Implementation repository](https://github.com/PHACDataHub/data-mesh-ref-impl) to see how the above are realized.
+*Follow the [Data Mesh Reference Implementation repository](https://github.com/PHACDataHub/data-mesh-ref-impl) to see how the above are realized.*
