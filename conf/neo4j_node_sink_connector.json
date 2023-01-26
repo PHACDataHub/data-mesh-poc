@@ -1,5 +1,5 @@
 {
-    "name": "Neo4jNodeSinkConnector",
+    "name": "Neo4jEntitySinkConnector",
     "config": {
         "connector.class": "streams.kafka.connect.sink.Neo4jSinkConnector",
         "key.converter": "org.apache.kafka.connect.storage.StringConverter",
@@ -7,13 +7,11 @@
         "value.converter": "io.confluent.connect.avro.AvroConverter",
         "value.converter.schema.registry.url": "http://schema-registry:8081",
         "value.converter.schemas.enable": true,
-        "topics": "topic_counties,topic_airports,topic_dailyc19,topic_arptoarp,topic_ctytoarp",
-        "_comment": "Sink configuration for US Covid Daily topics",
+        "topics": "topic_counties,topic_airports,topic_dailyc19",
+        "_comment": "Node sink configuration for US Covid Daily topics",
         "neo4j.topic.cypher.topic_counties": "MERGE (c:County {county_fips: event.county_fips}) SET c.county_full=event.county_full, c.county_ascii=event.county_ascii, c.state_id=event.state_id, c.state_name=event.state_name, c.population=event.population, c.location=POINT({latitude: event.lat, longitude: event.lng})",
         "neo4j.topic.cypher.topic_airports": "MERGE (a:Airport {ident: event.ident}) SET a.iata_code=event.iata_code, a.local_code=event.local_code, a.municipality=event.municipality, a.name=event.name, a.type=event.type, a.location=POINT({latitude: event.lat, longitude: event.lng})",
         "neo4j.topic.cypher.topic_dailyc19": "MERGE (d:DailyC19 {date: event.date, fips: event.fips}) SET d.state=event.state, d.county=event.county, d.cases=event.cases, d.deaths=event.deaths",
-        "neo4j.topic.cypher.topic_arptoarp": "WITH event WHERE SIZE(event.airport_1) > 0 AND SIZE(event.airport_2) > 0 MERGE (a1:Airport {iata_code: event.airport_1})-[r:A2A]-(a2:Airport {iata_code: event.airport_2}) SET r.year = event.year, r.quarter = event.quarter, r.nsmiles = event.nsmiles, r.passengers = event.passengers, r.fare = event.fare",
-        "neo4j.topic.cypher.topic_ctytoarp": "MERGE (c:County{county_fips: event.fips}) MERGE (a:Airport{iata_code: event.iata}) MERGE (c)-[r:C2A]-(a) SET r.distance = ROUND(TOFLOAT(event.distance)/1000)",
         "errors.retry.timeout": "-1",
         "errors.retry.delay.max.ms": "1000",
         "errors.tolerance": "all",

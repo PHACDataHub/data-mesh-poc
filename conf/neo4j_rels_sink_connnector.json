@@ -1,0 +1,24 @@
+{
+    "name": "Neo4jRelationshipSinkConnector",
+    "config": {
+        "connector.class": "streams.kafka.connect.sink.Neo4jSinkConnector",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+        "key.converter.schema.registry.url": "http://schema-registry:8081",
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter.schema.registry.url": "http://schema-registry:8081",
+        "value.converter.schemas.enable": true,
+        "topics": "topic_arptoarp,topic_ctytoarp",
+        "_comment": "Relation sink configuration for US Covid Daily topics",
+        "neo4j.topic.cypher.topic_arptoarp": "MATCH (a1:Airport {iata_code: event.airport_1}), (a2:Airport {iata_code: event.airport_2}) CREATE (a1)-[r:A2A {year: event.year, quarter: event.quarter, nsmiles: event.nsmiles, passengers: event.passengers, fare: event.fare}]->(a2)",
+        "neo4j.topic.cypher.topic_ctytoarp": "MERGE (c:County{county_fips: event.fips}) MERGE (a:Airport{iata_code: event.iata}) MERGE (c)-[r:C2A]-(a) SET r.distance = ROUND(TOFLOAT(event.distance)/1000)",
+        "errors.retry.timeout": "-1",
+        "errors.retry.delay.max.ms": "1000",
+        "errors.tolerance": "all",
+        "errors.log.enable": true,
+        "errors.log.include.messages": true,
+        "neo4j.server.uri": "bolt://neo4j:7687",
+        "neo4j.authentication.basic.username": "neo4j",
+        "neo4j.authentication.basic.password": "phac2022",
+        "neo4j.encryption.enabled": false
+    }
+}

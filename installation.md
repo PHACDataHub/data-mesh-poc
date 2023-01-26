@@ -275,7 +275,12 @@ Check if the data points are there (press Ctrl+C to quit)
 
 Import all nodes and relationships
 ```
-    ./scripts/neo4j/setup_kafka_connector.sh
+    ./scripts/neo4j/setup_kafka_node_connector.sh
+```
+
+Wait until complete
+```
+    ./scripts/neo4j/setup_kafka_rels_connector.sh
 ```
 
 4. Open Neo4j browser
