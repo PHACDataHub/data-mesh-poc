@@ -8,7 +8,7 @@ Data Mesh Proof of Concept
 
 2. Get this repository
 
-```    
+```bash  
     git clone https://github.com/PHACDataHub/data-mesh-poc.git
 ```
 
@@ -16,17 +16,17 @@ Data Mesh Proof of Concept
 
 Install docker
 
-```
+```bash
     ./scripts/docker/install.sh
 ```
 
 Make sure that it is running
-```
+```bash
     docker system info
 ```
 
 Test if you can pull and run a `hell-world` image
-```
+```bash
     ./scripts/docker/test.sh
 ```
 
@@ -34,42 +34,42 @@ Test if you can pull and run a `hell-world` image
 
 1. Prepare folders for data, logs, and test files
 
-```    
+```bash
     ./scripts/kafka/setup.sh
 ```
 
 2. Start the cluster
 
-```
+```bash
     ./scripts/kafka/start_after_setup.sh
 ```
 
 3. Stop the cluster
 
-```
+```bash
     ./scripts/kafka/stop.sh
 ```
 
 4. Restart the cluster (once it has already been set up)
 
-```
+```bash
     ./scripts/kafka/start_again.sh
 ```
 
 5. Remove the cluster
 
-```
+```bash
     ./scripts/kafka/cleanup.sh
 ```
 
 ***Note: sometime the `connect` plugins are not propertly installed. You might need to check `connect` logs.***
 
-```
+```bash
     docker compose -f docker-compose-kafka.yml logs connect -f
 ```
 
 scan for 
-```
+```bash
     connect  | Unable to find a component 
     connect  |  
     connect  | Error: Component not found, specify either valid name from Confluent Hub in format: <owner>/<name>:<version:latest> or path to a local file 
@@ -77,7 +77,7 @@ scan for
 
 and then install them manually (for example for the `neo4j` plugin)
 
-```
+```bash
     docker exec -it connect bash
     confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:5.0.2
 ```
@@ -88,12 +88,12 @@ and then install them manually (for example for the `neo4j` plugin)
 
 1. Setup the connectors and topics to read csv data files
 
-```
+```bash
     ./scripts/kafka/setup_spooldir_connectors.sh
 ```
 
 Check if the data points are there (press Ctrl+C to quit)
-```
+```bash
     ./scripts/kafka/get_topic_info.sh topic_airports
     ./scripts/kafka/get_topic_info.sh topic_counties
     ./scripts/kafka/get_topic_info.sh topic_arttoarp
@@ -108,7 +108,7 @@ Select `Messages`, then on `offset` (next to `Jump to offset`) select `0` to sta
 
 3. Setting up PostgreSQL and Grafana
 
-```
+```bash
     ./scripts/postgres/start_first_time.sh
 ```
 
@@ -118,7 +118,7 @@ Open Kafka Control Center at `http://localhost:9021`, `ksql`, then use the `Edit
 
 ***Verify if the values of KEY_SCHEMA_ID and VALUE_SCHEMA_ID are the same as in the `topic_dailyc19` topic***
 
-```
+```SQL
     CREATE STREAM stream_dailyc19 (
         date VARCHAR,
         fips VARCHAR,
@@ -134,7 +134,7 @@ Open Kafka Control Center at `http://localhost:9021`, `ksql`, then use the `Edit
     );
 ```
 
-```
+```SQL
     CREATE STREAM california_covid
     AS SELECT 
         ROWKEY, date, fips, county, cases, deaths
@@ -150,11 +150,13 @@ Open Kafka Control Center at `http://localhost:9021`, `ksql`, then use the `Edit
     ./scripts/postgres/setup_kafka_connector.sh
 ```
 
-```
+```bash
     docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
-    postgres=# \dt
-    postgres=# SELECT * FROM topic_dailyc19 FETCH FIRST 10 ROWS ONLY;
-    postgres=# SELECT * FROM "CALIFORNIA_COVID" FETCH FIRST 10 ROWS ONLY;
+```
+
+```SQL
+    SELECT * FROM topic_dailyc19 FETCH FIRST 10 ROWS ONLY;
+    SELECT * FROM "CALIFORNIA_COVID" FETCH FIRST 10 ROWS ONLY;
 ```
 
 6. Configure Grafana to use PostgreSQL instance
@@ -165,7 +167,7 @@ Create a data source by select `Configuration` on the left menu bar, select `Pos
 
 ***If the connection to Grafana fails (nothing show on the browser) then stop/restart might help***
 
-```
+```bash
     ./scripts/postgres/stop.sh
     ./scripts/postgres/start_again.sh
 ```
@@ -174,13 +176,13 @@ Create a data source by select `Configuration` on the left menu bar, select `Pos
 
 Create a new dashboard with a panel to display first 10 rows in the database.. Selecting `PostgreSQL` as the data source, `Table` as view type, switch the Query Builder to `Code` (instead of `Builder`), and type
 
-```
+```SQL
     SELECT NOW() AS time, * FROM topic_dailyc19 LIMIT 10;
 ```
 
 Design another panel 
 
-```
+```SQL
     SELECT 
     state,
     SUM(cases) AS cases, 
@@ -193,7 +195,7 @@ Design another panel
 
 Then the third panel, choosing Pie Chart
 
-```
+```SQL
     SELECT
         NOW() AS time,
         state AS metric,
@@ -207,7 +209,7 @@ Then the third panel, choosing Pie Chart
 
 Then the third panel, choosing Pie Chart
 
-```
+```SQL
     SELECT
         SUM(cases) AS cases,
         state as metric
@@ -218,7 +220,7 @@ Then the third panel, choosing Pie Chart
 '
 And the final panel, choosing Bar Gauge
 
-```
+```SQL
     SELECT
         SUM(cases) AS "cases",
         date
@@ -235,25 +237,25 @@ The full config can be viewed in [grafana.json](./conf/grafana.json).
 
 1. Setup a Spark master and three slaves
 
-```
+```bash
     ./scripts/spark/start_first_time.sh
 ```
 
 2. Run the Spark app
 
-```
+```bash
     ./scripts/spark/run_spark_app.sh
 ```
 
 3. Push the results into the `topic_ctytoarp`
 
-```
+```bash
     ./scripts/spark/setup_kafka_connector.sh
 ```
 
 Check if the data points are there (press Ctrl+C to quit)
 
-```
+```bash
     ./scripts/kafka/get_topic_info.sh topic_ctytoarp
 ```
 
@@ -261,25 +263,25 @@ Check if the data points are there (press Ctrl+C to quit)
 
 1. Setup a Neo4j and neodash
 
-```
+```bash
     ./scripts/neo4j/start_first_time.sh
 ```
 
 2. Setup the database
 
-```
+```bash
     ./scripts/neo4j/setup_database.sh
 ```
 
 3. Connect to Kafka to receive all data
 
 Import all nodes and relationships
-```
+```bash
     ./scripts/neo4j/setup_kafka_node_connector.sh
 ```
 
 Wait until complete (approx 10 mins, check on neo4j if approx over 860K nodes imported)
-```
+```bash
     ./scripts/neo4j/setup_kafka_rels_connector.sh
 ```
 
@@ -287,27 +289,23 @@ Wait until complete (approx 10 mins, check on neo4j if approx over 860K nodes im
 
 Open browser at `http://localhost:7474`, then use `neo4j/phac2022` for login.
 
-5. Using Neodash
-
-Open browser at `http://localhost:5005`, then connect to existing dashboard for preview.
-
 Example queries
 
 250 days period
-```
+```Cypher
     MATCH (d:DailyC19) 
         WHERE d.fips = "53061" 
     RETURN DATE(d.date) AS date, d.cases AS cases, d.deaths AS deaths ORDER BY date SKIP 50 LIMIT 250
 ```
 
 Air routes from Snohomish County
-```
+```Cypher
     MATCH (d1:County {county_fips: "53061"})-[r1:C2A]-(a1:Airport)-[r2:A2A]-(a2:Airport)-[r3:C2A]-(d2:County)
     RETURN d1, r1, a1, r2, a2, r3, d2
 ```
 
 Snohomish & Los Angeles Counties
-```
+```Cypher
     MATCH (d1:DailyC19 {fips: "53061"})
     WHERE d1.date > "2020-03-31"
     WITH d1 MATCH (d2:DailyC19 {fips: "06037", date: d1.date})
@@ -316,8 +314,12 @@ Snohomish & Los Angeles Counties
 
 6. Preparing data for finding correlations
 
-Sum up quarterly passenger traffic to make it annual
+```bash
+    ./scripts/neo4j/post_processing.sh
 ```
+
+Sum up quarterly passenger traffic to make it annual
+```Cypher
     CALL apoc.periodic.iterate("
         MATCH (a1:Airport)
         RETURN a1 ORDER BY a1.ident
@@ -334,7 +336,7 @@ Sum up quarterly passenger traffic to make it annual
 ```
 
 Sum up passenger traffic per air route for each connected county pairs
-```
+```Cypher
     CALL apoc.periodic.iterate("
         MATCH (c1:County)
         RETURN c1 ORDER BY c1.county_fips
@@ -355,7 +357,7 @@ Sum up passenger traffic per air route for each connected county pairs
 ```
 
 Setting valid date range (having Covid data) for each county
-```
+```Cypher
     MATCH (c:County)
     WITH c
         MATCH (d:DailyC19 {fips: c.county_fips})
@@ -365,13 +367,13 @@ Setting valid date range (having Covid data) for each county
         SET c.min_date = min_date, c.max_date = max_date
 ```
 
-```
+```Cypher
     MATCH (c1:County)-[r:C2C_PT]-(c2:County)
     REMOVE r.sos
 ```
 
 Compute correlation (based on sum of squares of dfference in cases as population percentage) of every connected county pairs.
-```
+```Cypher
     CALL apoc.periodic.iterate("
         MATCH (c1:County)-[r:C2C_PT]-(c2:County)
         WHERE c1.county_fips < c2.county_fips
@@ -396,16 +398,16 @@ Compute correlation (based on sum of squares of dfference in cases as population
 
 7. Compute clusters
 
-```
+```Cypher
     MATCH (c:County)
     REMOVE c.community;
 ```
 
-```
+```Cypher
     CALL gds.graph.drop('correlatedCounties');
 ```
 
-```
+```Cypher
     CALL gds.graph.project(
         'correlatedCounties',
         'County',
@@ -420,37 +422,35 @@ Compute correlation (based on sum of squares of dfference in cases as population
     )
 ```
 
-```
+```Cypher
     CALL gds.louvain.write.estimate('correlatedCounties', { writeProperty: 'community' })
     YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
 ```
 
-```
+```Cypher
     CALL gds.louvain.write('correlatedCounties', { writeProperty: 'community' })
     YIELD communityCount, modularity, modularities
 ```
 
-```
+```Cypher
     MATCH (c:County)
     WITH DISTINCT(c.community) AS community, COUNT(*) AS count
     RETURN community, count
 ```
 
-```
+```Cypher
     MATCH (c1:County)-[r1:C2A]-(a1:Airport)-[r2:A2A_PT]-(a2:Airport)-[r3:C2A]-(c2:County)
 	    WHERE c1.community = c2.community AND c1.county_fips IN ["06037"]
     RETURN c1, r1, a1, r2, a2, r3, c2
 ```
 
-8. Correlated counties
-
-```
+```Cypher
     MATCH (c1:County {county_fips: "06037"})-[r:C2C_PT]-(c2:County)
         WHERE r.sos <= 0.2
     RETURN c2.county_fips, c2.county_ascii, c2.state_name, r.sos ORDER BY r.sos ASC
 ```
 
-```
+```Cypher
     MATCH (d1:DailyC19 {fips: "06037"}), (c1:County {county_fips: "06037"})
         WHERE d1.date >= "2020-04-01"
     WITH d1, c1
@@ -469,6 +469,10 @@ Compute correlation (based on sum of squares of dfference in cases as population
         d5.cases*100.0/c5.population AS Fulton_GA
         LIMIT 250
 ```
+
+8. Using Neodash
+
+Open browser at `http://localhost:5005`, then connect to existing dashboard for preview.
 
 # F. Using Neo4j Desktop
 

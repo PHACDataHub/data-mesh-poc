@@ -159,12 +159,12 @@ A Kafka Cluster usually consists of:
 
 ***Note: at the first time the `connect` plugins are not propertly installed. You might need to check `connect` logs.***
 
-```
+```bash
     docker-compose -f docker-compose-kafka.yml logs connect -f
 ```
 
 scan for 
-```
+```bash
     connect  | Unable to find a component 
     connect  |  
     connect  | Error: Component not found, specify either valid name from Confluent Hub in format: <owner>/<name>:<version:latest> or path to a local file 
@@ -172,7 +172,7 @@ scan for
 
 and then install them manually (for example for the `neo4j` plugin)
 
-```
+```bash
     docker exec -it connect bash
     confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:5.0.2
 ```
@@ -389,7 +389,7 @@ We use stream processing capability of Kafka by first to find the value the `KEY
 
 then, to `create a stream`  called `stream_dailyc19` from the `topic_dailyc19` records', basically turning any topic into a stream;
 
-```
+```SQL
     CREATE STREAM stream_dailyc19 (
         date VARCHAR,
         fips VARCHAR,
@@ -409,7 +409,7 @@ then, to `create a stream`  called `stream_dailyc19` from the `topic_dailyc19` r
 
 and finally, to perform (aggregation/transformation/)filtering only the messages to provide California-only daily reports and turn it into a topic `CALIFORNIA_COVID`.
 
-```
+```SQL
     CREATE STREAM california_covid
     AS SELECT 
         ROWKEY, date, fips, county, cases, deaths
@@ -432,7 +432,7 @@ Grafana is a multi-platform open source analytics and interactive visualization 
 
 Now, the monitoring component contains only a PostgeSQL database and a Grafana visualization software, both run as Docker containers, configured in `docker-compose-postgres.yml` and easily be ran by:
 
-```
+```bash
     ./scripts/postgres/start_first_time.sh
 ```
 
@@ -442,7 +442,7 @@ Now, the monitoring component contains only a PostgeSQL database and a Grafana v
 
 The daily reports as Kafka records flow from `topic_dailyc19` and `CALIFORNIA_COVID` topic into the database via two connectors, one for each topic. They can be configured in a similar manner via REST endpoints of Kafka `connect`:
 
-```
+```bash
     ./scripts/postgres/setup_kafka_connector.sh
 ```
 
@@ -529,7 +529,7 @@ then inside PosgreSQL command line prompt:
     (10 rows)
 ```
 
-```
+```postgres
     postgres=# SELECT * FROM "CALIFORNIA_COVID" FETCH FIRST 10 ROWS ONLY;
         DATE    | FIPS  |   COUNTY    | CASES | DEATHS 
     ------------+-------+-------------+-------+--------
@@ -547,7 +547,7 @@ then inside PosgreSQL command line prompt:
 ```
 
 To exit:
-```
+```postgres
     postgres=# \q
 ```
 
@@ -563,7 +563,10 @@ Navigate to the configuration (click on the cog at the top at the bottom menu on
 
 ![Setup Postgres for Grafana](../images/screen-captured/grafana-postgres.png)
 
-Once done, click on the `Dashboard` (four squares) to create dashboards. There are several ways to create them. One is to create an empty dashboard, then an empty panel, then select `PostgreSQL` as data source, add the `SQL` queries, then customize the look-and-feel.
+Once done, click on the `Dashboard` (four squares) to create dashboards. There are several ways to create them. 
+
+
+One is to create an empty dashboard, then an empty panel, then select `PostgreSQL` as data source, add the `SQL` queries, then customize the look-and-feel.
 
 We show a shortcut by select `Import` on `Dashboards` and then copy the content of [grafana_us.json](../conf/grafana_us.json) or  [grafana_california.json](../conf/grafana_california.json) into  the `Import via panel json` textbox and `Load` it. 
 
@@ -693,8 +696,12 @@ By opening a browser to port `localhost:7474`, we can see if the data are succes
 
 4. We then have to perform a few queries on the `neo4j browser` to get the data ready for our study:
 
-Sum up quarterly passenger traffic to make it annual
+```bash
+    ./scripts/neo4j/post_processing.sh
 ```
+
+Sum up quarterly passenger traffic to make it annual
+```Cypher
     CALL apoc.periodic.iterate("
         MATCH (a1:Airport)
         RETURN a1 ORDER BY a1.ident
@@ -713,7 +720,7 @@ Sum up quarterly passenger traffic to make it annual
 ![Neo4j browser query](../images/screen-captured/neo4j-browser-query.png)
 
 Sum up passenger traffic per air route for each connected county pairs
-```
+```Cypher
     CALL apoc.periodic.iterate("
         MATCH (c1:County)
         RETURN c1 ORDER BY c1.county_fips
@@ -737,7 +744,7 @@ Here is an example: counties connected by air routes to Snohomish County, Washin
 ![Counties connected by air routes to Snohomish County](../images/screen-captured/connected-counties-snohomish.png)
 
 Setting valid date range (having Covid data) for each county
-```
+```Cypher
     MATCH (c:County)
     WITH c
         MATCH (d:DailyC19 {fips: c.county_fips})
@@ -762,9 +769,16 @@ $$\frac{1}{max_{date} - min_{date} + 1} \sum_{i=min_{date}}^{max_{date}} \left( 
 
 &nbsp;
 
+**What does it mean?**
++ *Imagine that each county is a point in a multi-dimensional space. The number of dimensions are the number of (reported) days, so we have over 3000 points (counties) in a **300+ dimensional space**. The values of the coordinates of the points are the numbers of daily surges;*
++ *Since the coordinates of the points can greatly vary, we perform a **normalization** by translating these points into a multi-dimensional cube whose side length is 100 (percent);*
++ *For each of the connected neighbors (counties connected by direct air routes), we compute the (multi-dimensional) **Euclidean distance** between the point and this neighbor. If the distance is within* $0.2 \times n,$ *where* $n$ *is the number of dimensions, then the neighbor is consider* **correlated**. *For example inside a $100 \times 100 \times 100$ cube two points within a distance of $0.2 \times 3 = 0.6$ are considered correlated.* 
+
+&nbsp;
+
 Below is the implementation in `Cypher Query Language`, the query language of `Neo4j`:
 
-```
+```Cypher
     CALL apoc.periodic.iterate("
         MATCH (c1:County)-[r:C2C_PT]-(c2:County)
         WHERE c1.county_fips < c2.county_fips
@@ -788,11 +802,11 @@ Below is the implementation in `Cypher Query Language`, the query language of `N
 ```
 
 Perform `Louvain clustering` algorithm
-```
+```Cypher
     CALL gds.graph.drop('correlatedCounties');
 ```
 
-```
+```Cypher
     CALL gds.graph.project(
         'correlatedCounties',
         'County',
@@ -807,12 +821,12 @@ Perform `Louvain clustering` algorithm
     )
 ```
 
-```
+```Cypher
     CALL gds.louvain.write.estimate('correlatedCounties', { writeProperty: 'community' })
     YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
 ```
 
-```
+```Cypher
     CALL gds.louvain.write('correlatedCounties', { writeProperty: 'community' })
     YIELD communityCount, modularity, modularities
 ```
@@ -823,13 +837,13 @@ Neodash supports presenting your data as tables, graphs, bar charts, line charts
 
 Following Cypher queries are use to fetch and show correlated data
 
-```
+```Cypher
     MATCH (c1:County {county_fips: "06037"})-[r:C2C_PT]-(c2:County)
         WHERE r.sos <= 0.2
     RETURN c2.county_fips, c2.county_ascii, c2.state_name, r.sos ORDER BY r.sos ASC
 ```
 
-```
+```Cypher
     MATCH (d1:DailyC19 {fips: "06037"}), (c1:County {county_fips: "06037"})
         WHERE d1.date >= "2020-04-01"
     WITH d1, c1

@@ -12,3 +12,5 @@ curl -X POST http://${connect}/connectors \
 
 echo "Listing all connectors ...";
 curl -s ${connect}/connectors | jq '.[]'
+
+./scripts/neo4j/wait_for_import.sh
