@@ -980,9 +980,9 @@ $$\frac{1}{max_{date} - min_{date} + 1} \sum_{i=min_{date}}^{max_{date}} \left( 
 &nbsp;
 
 **What does it mean?**
-+ *Imagine that each county is a point in a multi-dimensional space. The number of dimensions are the number of (reported) days, so we have over 3000 points (counties) in a **300+ dimensional space**. The values of the coordinates of the points are the numbers of daily surges;*
-+ *Since the coordinates of the points can greatly vary, we perform a **normalization** by translating these points into a multi-dimensional cube whose side length is 100 (percent);*
-+ *For each of the connected neighbors (counties connected by direct air routes), we compute the (multi-dimensional) **Euclidean distance** between the point and this neighbor. If the distance is within $0.2 \times n,$ where $n$ is the number of dimensions, then the neighbor is consider **correlated**. For example inside a $100 \times 100 \times 100$ cube two points within a distance of $0.6$ are considered correlated.* 
++ Imagine that each county is a point in a multi-dimensional space. The number of dimensions are the number of (reported) days, so we have over 3000 points (counties) in a **300+ dimensional space**. The values of the coordinates of the points are the numbers of daily surges;
++ Since the coordinates of the points can greatly vary, we perform a **normalization** by translating these points into a multi-dimensional cube whose side length is 100 (percent);
++ For each of the connected neighbors (counties connected by direct air routes), we compute the (multi-dimensional) **Euclidean distance** between the point and this neighbor. If the distance is within $0.2 \times n,$ where $n$ is the number of dimensions, then the neighbor is consider **correlated**. For example inside a $100 \times 100 \times 100$ cube two points within a distance of $0.2 \times 3 = 0.6$ are considered correlated.
 
 &nbsp;
 
