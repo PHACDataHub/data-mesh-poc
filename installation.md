@@ -469,3 +469,13 @@ Compute correlation (based on sum of squares of dfference in cases as population
         d5.cases*100.0/c5.population AS Fulton_GA
         LIMIT 250
 ```
+
+# F. Using Neo4j Desktop
+
+[Neo4j Desktop](https://neo4j.com/developer/neo4j-desktop/#what-is-neo4j-desktop) is a Developer IDE or Management Environment for Neo4j instances similar to Enterprise Manager, but better. You can manage as many projects and database servers locally as you like and also connect to remote Neo4j servers. *Neo4j Desktop comes with a free Developer License of Neo4j Enterprise Edition. The Java Runtime is also bundled.* It can be downloaded from [here](https://neo4j.com/download/).
+
+[Install and configure it](https://neo4j.com/download-thanks-desktop/) with a given `Activation Key`, don't install the example database.
+
+Click on the `New` button next to the `Projects` title, add a new project, and give it a name `Data Mesh PoC`, access to `Neo4j` instance `neo4j://localhost:7687` with `neo4j` and `phac2022` as credential.
+
+Click on the `Connect` button, then choose `Neo4j Browser` from the dropdown list, then you have access to Neo4j via browser. Now, repeat the step and choose `Neo4j Bloom`.
