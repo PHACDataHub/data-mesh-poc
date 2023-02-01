@@ -565,10 +565,39 @@ Navigate to the configuration (click on the cog at the top at the bottom menu on
 
 Once done, click on the `Dashboard` (four squares) to create dashboards. There are several ways to create them. 
 
+One way to visualize data is to create an empty dashboard, then an empty panel, then select `PostgreSQL` as data source, add the `SQL` queries, then customize the look-and-feel.
 
-One is to create an empty dashboard, then an empty panel, then select `PostgreSQL` as data source, add the `SQL` queries, then customize the look-and-feel.
+First, we need to create a new dashboard by navigating to the left menu, select the `>` arrow to unfold the menu, then `+ New dashboard` menu item.
 
-We show a shortcut by select `Import` on `Dashboards` and then copy the content of [grafana_us.json](../conf/grafana_us.json) or  [grafana_california.json](../conf/grafana_california.json) into  the `Import via panel json` textbox and `Load` it. 
+<img src="../images/screen-captured/grafana-new-dashboard.png" alt="Grafana new dashboard" width="640"/>
+
+Click on `Add a new panel`.
+
+<img src="../images/screen-captured/grafana-new-panel.png" alt="Grafana new panel" width="640"/>
+
+Switch to `Code` mode to enter query,
+
+![Grafana new panel](../images/screen-captured/grafana-panel-code.png)
+
+then type
+
+```SQL
+    SELECT 
+        TO_TIMESTAMP("DATE", 'YYYY-MM-DD') AS time , 
+        "CASES" as metric
+    FROM "CALIFORNIA_COVID" 
+    WHERE "COUNTY" = 'Los Angeles'
+```
+
+click on `Run Query`, then select `Time series` as panel type (top on the right option panel), on `Panel options`, give it a `Title` *Los Angeles County cases*, and a `Description` *Surges in Los Angeles County over the year 2020.*
+
+![Grafana panel design](../images/screen-captured/grafana-panel-design.png)
+
+Click on the top-right button `Apply` to apply the design. Now you should see the whole panel.
+
+![Grafana panel design](../images/screen-captured/grafana-first-panel.png)
+
+To save time, previously design dashboards can be easily imported and by select `Import` on `Dashboards` and then copy the content of [grafana_us.json](../conf/grafana_us.json) or  [grafana_california.json](../conf/grafana_california.json) into  the `Import via panel json` textbox and `Load` it. 
 
 ![Import dashboard for Grafana](../images/screen-captured/grafana-import-json.png)
 
@@ -584,7 +613,33 @@ and one for California State
 
 ![Grafana dashboard for California State](../images/screen-captured/grafana-california.png)
 
-### IV.5.e (Optional) Stop, restart, and cleanup
+### IV.5.e Power BI Desktop visualizations
+
+If you can install a Power BI Desktop version,
+
+<img src="../images/screen-captured/power-bi-installation.png" alt="Power BI Desktop Installation" width="640"/>
+
+then you can setup a connection to the PostgreSQL database and use Power BI Desktop in a similar way (as Grafana) by first choosing the Database Type
+
+<img src="../images/screen-captured/postgres-server.png" alt="Choosing PostgreSQL Database as source" width="640"/>
+
+then the connectivity to access it
+
+<img src="../images/screen-captured/postgres-server-2.png" alt="Connectivity to PostgreSQL" width="640"/>
+
+then the login to it
+
+<img src="../images/screen-captured/postgres-login.png" alt="Login into PostgreSQL" width="640"/>
+
+then selecting the proper data source (`California Covid`),
+
+![Power BI for California Covid](../images/screen-captured/power-bi-california-covid.png)
+
+Finally work on the dashboard,
+
+![California Covid dashboard by Power BI](../images/screen-captured/power-bi-dashboard.png)
+
+### IV.5.f (Optional) Stop, restart, and cleanup
 
 1. Stop the cluster
 
@@ -626,6 +681,148 @@ To perform computations to find nearby airports for each county, se setup a Spar
 
 ```bash
     ./scripts/spark/run_spark_app.sh
+```
+
+```bash
+Loading counties ... 
+Showing counties ... 
++--------------+--------------+--------------------+-----------+--------+----------+-------+---------+----------+
+|        county|  county_ascii|         county_full|county_fips|state_id|state_name|    lat|      lng|population|
++--------------+--------------+--------------------+-----------+--------+----------+-------+---------+----------+
+|   Los Angeles|   Los Angeles|  Los Angeles County|      06037|      CA|California|34.3209|-118.2247|  10040682|
+|          Cook|          Cook|         Cook County|      17031|      IL|  Illinois|41.8401| -87.8168|   5169517|
+|        Harris|        Harris|       Harris County|      48201|      TX|     Texas|29.8578| -95.3936|   4680609|
+|      Maricopa|      Maricopa|     Maricopa County|      04013|      AZ|   Arizona| 33.349|-112.4915|   4412779|
+|     San Diego|     San Diego|    San Diego County|      06073|      CA|California|33.0343| -116.735|   3323970|
+|        Orange|        Orange|       Orange County|      06059|      CA|California|33.7031|-117.7609|   3170345|
+|    Miami-Dade|    Miami-Dade|   Miami-Dade County|      12086|      FL|   Florida|25.6149| -80.5623|   2705528|
+|        Dallas|        Dallas|       Dallas County|      48113|      TX|     Texas|32.7666| -96.7778|   2622634|
+|         Kings|         Kings|        Kings County|      36047|      NY|  New York|40.6395| -73.9385|   2576771|
+|     Riverside|     Riverside|    Riverside County|      06065|      CA|California|33.7437|-115.9938|   2437864|
+|        Queens|        Queens|       Queens County|      36081|      NY|  New York|40.7023| -73.8203|   2270976|
+|         Clark|         Clark|        Clark County|      32003|      NV|    Nevada|36.2152|-115.0135|   2228866|
+|          King|          King|         King County|      53033|      WA|Washington|47.4902|-121.8052|   2225064|
+|San Bernardino|San Bernardino|San Bernardino Co...|      06071|      CA|California|34.8414|-116.1785|   2162532|
+|       Tarrant|       Tarrant|      Tarrant County|      48439|      TX|     Texas|32.7719| -97.2911|   2077153|
+|         Bexar|         Bexar|        Bexar County|      48029|      TX|     Texas|29.4489|   -98.52|   1978826|
+|       Broward|       Broward|      Broward County|      12011|      FL|   Florida|26.1523| -80.4871|   1942273|
+|   Santa Clara|   Santa Clara|  Santa Clara County|      06085|      CA|California|37.2318|-121.6951|   1924379|
+|         Wayne|         Wayne|        Wayne County|      26163|      MI|  Michigan|42.2819| -83.2822|   1753059|
+|       Alameda|       Alameda|      Alameda County|      06001|      CA|California|37.6469|-121.8888|   1661584|
++--------------+--------------+--------------------+-----------+--------+----------+-------+---------+----------+
+only showing top 20 rows
+
+Loading airports ... 
+Filtering airports ... 
+Showing airports ... 
++---------+-----------+---------+------------+--------+---------+-----+-----------+----------+----------+---------------+--------------------+-------------+
+|continent|        lng|      lat|elevation_ft|gps_code|iata_code|ident|iso_country|iso_region|local_code|   municipality|                name|         type|
++---------+-----------+---------+------------+--------+---------+-----+-----------+----------+----------+---------------+--------------------+-------------+
+|       NA|   -80.2748|  25.3254|           8|    07FA|      OCA| 07FA|         US|     US-FL|      07FA|      Key Largo|Ocean Reef Club A...|small_airport|
+|       NA|     -162.9|  61.9346|         305|    null|      PQS|  0AK|         US|     US-AK|       0AK|  Pilot Station|Pilot Station Air...|small_airport|
+|       NA|-106.928345|38.851917|        8980|    0CO2|      CSE| 0CO2|         US|     US-CO|      0CO2|  Crested Butte|Crested Butte Air...|small_airport|
+|       NA|   -98.6225|  30.2518|        1515|    0TE7|      JCY| 0TE7|         US|     US-TX|      0TE7|   Johnson City|   LBJ Ranch Airport|small_airport|
+|       NA|   -72.3114|  42.2233|         418|    13MA|      PMX| 13MA|         US|     US-MA|      13MA|         Palmer|Metropolitan Airport|small_airport|
+|       NA|   -131.637|  55.6013|           0|     13Z|      WLR|  13Z|         US|     US-AK|       13Z|         Loring|Loring Seaplane Base|seaplane_base|
+|       NA| -162.44046| 60.90559|          12|    PPIT|      NUP|  16A|         US|     US-AK|       16A|    Nunapitchuk| Nunapitchuk Airport|small_airport|
+|       NA|   -133.597|   55.803|           0|     16K|      PTC|  16K|         US|     US-AK|       16K|     Port Alice|Port Alice Seapla...|seaplane_base|
+|       NA|   -141.662|   59.969|          50|    19AK|      ICY| 19AK|         US|     US-AK|      19AK|        Icy Bay|     Icy Bay Airport|small_airport|
+|       NA|    -133.61|  56.3288|           0|     19P|      PPV|  19P|         US|     US-AK|       19P|Port Protection|Port Protection S...|seaplane_base|
+|       NA| -156.82039|64.416626|        1598|     1KC|      KKK|  1KC|         US|     US-AK|       1KC|Kalakaket Creek|Kalakaket Creek A...|small_airport|
+|       NA|   -122.272|  41.2632|        3258|    KMHS|      MHS|  1O6|         US|     US-CA|       1O6|       Dunsmuir|Dunsmuir Muni-Mot...|small_airport|
+|       NA|  -97.66192|28.362444|         190|    null|      NIR| 1XA2|         US|     US-TX|       TX2|       Beeville|Chase Field Indus...|small_airport|
+|       NA|-113.231155|36.258614|        4100|    null|      GCT|  1Z1|         US|     US-AZ|       1Z1|       Whitmore|Grand Canyon Bar ...|small_airport|
+|       NA| -146.70404|60.893818|           0|    null|      ELW|  1Z9|         US|     US-AK|       1Z9|        Ellamar|Ellamar Seaplane ...|seaplane_base|
+|       NA|    -155.44|  61.3591|         552|     2AK|      LVD|  2AK|         US|     US-AK|       2AK|   Lime Village|Lime Village Airport|small_airport|
+|       NA|   -155.669|  66.2161|         534|    2AK6|      HGZ| 2AK6|         US|     US-AK|      2AK6|        Hogatza|   Hog River Airport|small_airport|
+|       NA|   -87.4997|  38.8514|         426|     I20|      OTN| 2IG4|         US|     US-IN|       I20|        Oaktown|      Ed-Air Airport|small_airport|
+|       NA|   -153.269|  63.3939|         650|     2K5|      TLF|  2K5|         US|     US-AK|       2K5|         Telida|      Telida Airport|small_airport|
+|       NA|   -95.5797|  28.9822|          15|    2TE0|      BZT| 2TE0|         US|     US-TX|      2TE0|       Brazoria|      Eagle Air Park|small_airport|
++---------+-----------+---------+------------+--------+---------+-----+-----------+----------+----------+---------------+--------------------+-------------+
+only showing top 20 rows
+
+Creating crossjoin ... 
++-----+-------+---------+----+-------+--------+
+| fips|  c_lat|    c_lng|iata|  a_lat|   a_lng|
++-----+-------+---------+----+-------+--------+
+|06037|34.3209|-118.2247| OCA|25.3254|-80.2748|
+|17031|41.8401| -87.8168| OCA|25.3254|-80.2748|
+|48201|29.8578| -95.3936| OCA|25.3254|-80.2748|
+|04013| 33.349|-112.4915| OCA|25.3254|-80.2748|
+|06073|33.0343| -116.735| OCA|25.3254|-80.2748|
+|06059|33.7031|-117.7609| OCA|25.3254|-80.2748|
+|12086|25.6149| -80.5623| OCA|25.3254|-80.2748|
+|48113|32.7666| -96.7778| OCA|25.3254|-80.2748|
+|36047|40.6395| -73.9385| OCA|25.3254|-80.2748|
+|06065|33.7437|-115.9938| OCA|25.3254|-80.2748|
+|36081|40.7023| -73.8203| OCA|25.3254|-80.2748|
+|32003|36.2152|-115.0135| OCA|25.3254|-80.2748|
+|53033|47.4902|-121.8052| OCA|25.3254|-80.2748|
+|06071|34.8414|-116.1785| OCA|25.3254|-80.2748|
+|48439|32.7719| -97.2911| OCA|25.3254|-80.2748|
+|48029|29.4489|   -98.52| OCA|25.3254|-80.2748|
+|12011|26.1523| -80.4871| OCA|25.3254|-80.2748|
+|06085|37.2318|-121.6951| OCA|25.3254|-80.2748|
+|26163|42.2819| -83.2822| OCA|25.3254|-80.2748|
+|06001|37.6469|-121.8888| OCA|25.3254|-80.2748|
++-----+-------+---------+----+-------+--------+
+only showing top 20 rows
+
+Calculate distances ... 
++-----+-------+---------+----+-------+--------+--------------------+------------------+
+| fips|  c_lat|    c_lng|iata|  a_lat|   a_lng|                   a|          distance|
++-----+-------+---------+----+-------+--------+--------------------+------------------+
+|06037|34.3209|-118.2247| OCA|25.3254|-80.2748| 0.08507581181020094|3771379.8973415224|
+|17031|41.8401| -87.8168| OCA|25.3254|-80.2748| 0.02353944033163009|1962702.1969749152|
+|48201|29.8578| -95.3936| OCA|25.3254|-80.2748|0.015130352228900412|1571315.5859158405|
+|04013| 33.349|-112.4915| OCA|25.3254|-80.2748| 0.06301967976259198| 3233303.234682059|
+|06073|33.0343| -116.735| OCA|25.3254|-80.2748| 0.07867837378687664| 3622697.105266685|
+|06059|33.7031|-117.7609| OCA|25.3254|-80.2748| 0.08297600449285199| 3723157.713276724|
+|12086|25.6149| -80.5623| OCA|25.3254|-80.2748|1.151298378889396...| 43234.69311607899|
+|48113|32.7666| -96.7778| OCA|25.3254|-80.2748|0.019866397250171502|1801962.4103455562|
+|36047|40.6395| -73.9385| OCA|25.3254|-80.2748|0.019848761135084082|1801157.0267206228|
+|06065|33.7437|-115.9938| OCA|25.3254|-80.2748| 0.07608030418714773| 3560746.030648261|
+|36081|40.7023| -73.8203| OCA|25.3254|-80.2748|0.020070557445618024|1811260.3683528423|
+|32003|36.2152|-115.0135| OCA|25.3254|-80.2748| 0.07399605630246278|3510342.1588307596|
+|53033|47.4902|-121.8052| OCA|25.3254|-80.2748| 0.11372193053193944|4382860.7762210155|
+|06071|34.8414|-116.1785| OCA|25.3254|-80.2748| 0.07735536162972613|3591268.9125193553|
+|48439|32.7719| -97.2911| OCA|25.3254|-80.2748|0.020853143007784188|1846479.2771022911|
+|48029|29.4489|   -98.52| OCA|25.3254|-80.2748|0.021080012381522035|  1856567.68216607|
+|12011|26.1523| -80.4871| OCA|25.3254|-80.2748|5.485549648022722E-5| 94373.84432793199|
+|06085|37.2318|-121.6951| OCA|25.3254|-80.2748| 0.10076067220674248| 4115872.508645151|
+|26163|42.2819| -83.2822| OCA|25.3254|-80.2748|0.022197275813378967|1905493.0609944456|
+|06001|37.6469|-121.8888| OCA|25.3254|-80.2748|   0.101824891863125| 4138344.518741266|
++-----+-------+---------+----+-------+--------+--------------------+------------------+
+only showing top 20 rows
+
+Limiting distances to 40 miles ... 
++-----+-------+---------+----+---------+-----------+--------------------+------------------+
+| fips|  c_lat|    c_lng|iata|    a_lat|      a_lng|                   a|          distance|
++-----+-------+---------+----+---------+-----------+--------------------+------------------+
+|12086|25.6149| -80.5623| OCA|  25.3254|   -80.2748|1.151298378889396...| 43234.69311607899|
+|02158| 62.155|-163.3826| PQS|  61.9346|     -162.9|7.596913893372199E-6|35120.181576660434|
+|08097|39.2171|-106.9166| CSE|38.851917|-106.928345|1.016202731813934E-5| 40618.93341142659|
+|08051|38.6668|-107.0317| CSE|38.851917|-106.928345|3.104303769218115E-6| 22450.18538285592|
+|08065|39.2025|-106.3448| CSE|38.851917|-106.928345|2.500939538568901E-5| 63722.23608685986|
+|48209|30.0579| -98.0312| JCY|  30.2518|   -98.6225|2.277032497993663...| 60802.83978732194|
+|48091|29.8082| -98.2783| JCY|  30.2518|   -98.6225|2.174810198652220...|59422.354429979925|
+|48259|29.9447| -98.7115| JCY|  30.2518|   -98.6225|7.633703781612457E-6| 35205.11806154229|
+|48171|30.3181| -98.9465| JCY|  30.2518|   -98.6225|6.296169739141368E-6| 31972.47602152779|
+|48299|30.7057| -98.6841| JCY|  30.2518|   -98.6225|1.590421399140834E-5| 50815.34251108926|
+|48031|30.2664| -98.3999| JCY|  30.2518|   -98.6225|2.831418936763779E-6| 21440.74500871218|
+|09003|41.8064| -72.7329| PMX|  42.2233|   -72.3114|2.070437588944565...|57978.926668764085|
+|25027|42.3514| -71.9077| PMX|  42.2233|   -72.3114|8.041933637577737E-6| 36134.19844483637|
+|25013|42.1351| -72.6316| PMX|  42.2233|   -72.3114|4.880110590711167E-6|  28148.3398543281|
+|25015|42.3402| -72.6638| PMX|  42.2233|   -72.3114|6.217323891092089E-6|31771.652001177645|
+|09013| 41.855| -72.3365| PMX|  42.2233|   -72.3114|1.035645651937917...| 41005.67294046831|
+|09015|  41.83| -71.9874| PMX|  42.2233|   -72.3114|1.619117315338834...| 51271.72525316231|
+|25011|42.5831| -72.5918| PMX|  42.2233|   -72.3114|1.312314031563772...|46159.111096013294|
+|02130|55.5852|-130.9288| WLR|  55.6013|   -131.637|1.221483841184451...| 44533.04053001048|
+|02198|55.7997|-133.0192| PTC|   55.803|   -133.597|8.032840930174344E-6| 36113.76483314352|
++-----+-------+---------+----+---------+-----------+--------------------+------------------+
+only showing top 20 rows
+
+Saving county and near by airports ... 
 ```
 
 3. Push the results into the `topic_ctytoarp` topic via a `spooldir` connector
@@ -686,13 +883,26 @@ Note that we have to wait until `neo4j` is ready. There are several ways to do s
 
 3. Connect to Kafka to receive all data
 
+Import all nodes and relationships
 ```bash
-    ./scripts/neo4j/setup_kafka_connector.sh
+    ./scripts/neo4j/setup_kafka_node_connector.sh
 ```
 
+Wait until complete (approx 3-4 mins, depending on hardware configuration, check on neo4j if `854114` nodes were imported)
+```bash
+    ./scripts/neo4j/setup_kafka_rels_connector.sh
+```
 By opening a browser to port `localhost:7474`, we can see if the data are successfully imported. See the number of nodes.
 
 ![Neo4j after import](../images/screen-captured/neo4j-after-import.png)
+
+You can also monitor the event flow progress from `Kafka Control Center`, using the `Consumer Group` menu item, then select [`Neo4jEntitySinkConnector`](../conf/neo4j_node_sink_connector.json) for the nodes, created from `topic_counties,topic_airports,topic_dailyc19` topics, 
+
+![Neo4j nodes import](../images/screen-captured/neo4j-node-consumer-group.png)
+
+and [`Neo4jRelationshipSinkConnector`](../conf/neo4j_rels_sink_connector.json) for the relationships, created from `topic_arptoarp,topic_ctytoarp` topics.
+
+![Neo4j relationship import](../images/screen-captured/neo4j-relationship-consumer-group.png)
 
 4. We then have to perform a few queries on the `neo4j browser` to get the data ready for our study:
 
@@ -835,6 +1045,8 @@ Perform `Louvain clustering` algorithm
 
 Neodash supports presenting your data as tables, graphs, bar charts, line charts, maps and more. It contains a Cypher editor to directly write the Cypher queries that populate the reports. You can save dashboards to your database, and share them with others.
 
+Quickstart: lets watch this [video](https://youtu.be/Ygzj0Y4cYm4), or a [hands-on lab](https://youtu.be/vjZ9M7JpExA), or start [here](https://neo4j.com/labs/neodash/2.2/user-guide/dashboards/). Knowledge of [Cypher Query Language](https://neo4j.com/labs/neodash/2.2/user-guide/dashboards/) is a must. If you are already good at it, here is the [Cheat Sheet](https://neo4j.com/docs/cypher-cheat-sheet/current/), or more powerful functions and procedures supported by the [Awesome Procedures for Neo4j](https://neo4j.com/docs/apoc/current/).
+
 Following Cypher queries are use to fetch and show correlated data
 
 ```Cypher
@@ -870,5 +1082,53 @@ Top 4 correlated counties to Los Angeles County, California
 
 All correlated counties to Los Angeles County, California
 ![All correlated counties to Los Angeles County, California](../images/screen-captured/correlated-counties-los-angeles.png)
+
+### IV.5.f Neo4j Bloom visualization
+
+[Neo4j Bloom](https://neo4j.com/product/bloom/) is a beautiful and expressive data visualization tool to quickly explore and freely interact with Neo4j’s graph data platform with no coding required. Read the [Visual Guide](https://neo4j.com/whitepapers/bloom-visual-guide/) or watch the [video](https://youtu.be/y9trGgqFu_k) for a quickstart.
+
+1. Installing Neo4j Desktop
+
+[Neo4j Desktop](https://neo4j.com/developer/neo4j-desktop/#what-is-neo4j-desktop) is a Developer IDE or Management Environment for Neo4j instances similar to Enterprise Manager, but better. You can manage as many projects and database servers locally as you like and also connect to remote Neo4j servers. *Neo4j Desktop comes with a free Developer License of Neo4j Enterprise Edition. The Java Runtime is also bundled.* It can be downloaded from [here](https://neo4j.com/download/).
+
+[Install and configure it](https://neo4j.com/download-thanks-desktop/) with a given `Activation Key`, don't install the example database.
+
+Click on the `New` button next to the `Projects` title, add a new project, and give it a name `Data Mesh PoC`, access to `Neo4j` instance `neo4j://localhost:7687` with `neo4j` and `phac2022` as credential.
+
+Click on the `Connect` button, then choose `Neo4j Browser` from the dropdown list, then you have access to Neo4j via browser. Now, repeat the step and choose `Neo4j Bloom`.
+
+2. Using Neo4j Bloom
+
+After open it, you probably find an empty screen, called a scene.
+
+![New Scene](../images/screen-captured/neo4j-bloom-new-scene.png)
+
+First, type part of the name of the `Snohomish` county to find which entities might have such a property matching this string. 
+
+![Finding Snohomish County](../images/screen-captured/neo4j-bloom-find-snoho-county.png)
+
+Click on the `County` node, then it offers some relationship to some `Airport`, 
+
+![Snohomish County with an air route](../images/screen-captured/neo4j-bloom-snoho-airport.png)
+
+then click on an `Airport` (nearby one), then to another `Airport` (the one connected by a direct air route, now we have an *abstract route* with unknown airports. There would be many possible two-airports paths.
+
+![Snohomish County with an air route](../images/screen-captured/neo4j-bloom-find-snoho-la-county.png)
+
+ Choose `Los Angeles` county as the next node on the path, basically to see what air routes connected the two counties.
+
+ ![Snohomish County with air routes to Los Angeles](../images/screen-captured/neo4j-bloom-find-snohomish-la-via-air-routes.png)
+
+More details of nodes and relationships can be seen,
+
+![Details in paths connecting Snohomish County via air routes with Los Angeles](../images/screen-captured/neo4j-bloom-find-snoho-la-county-details.png)
+
+Of course without using `Los Angeles` as an end node, we can see all possible paths.
+
+![Snohomish County with air routes to all countiees](../images/screen-captured/neo4j-bloom-find-snoho-all-county.png)
+
+And we can remove the airports to see the abstraction of Snohomish and connected counties at higher level.
+
+![Snohomish County with air routes to all countiees](../images/screen-captured/neo4j-bloom-snoho-all-counties-no-airport.png)
 
 [Prev](./III-a-short-summary-of-data-mesh.md) | [Top](../README.md) | [Next](./V-towards-a-reference-implementation.md)

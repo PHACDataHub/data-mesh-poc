@@ -44,19 +44,19 @@ Test if you can pull and run a `hell-world` image
     ./scripts/kafka/start_after_setup.sh
 ```
 
-3. Stop the cluster
+3. (Optional) Stop the cluster
 
 ```bash
     ./scripts/kafka/stop.sh
 ```
 
-4. Restart the cluster (once it has already been set up)
+4. (Optional) Restart the cluster (once it has already been set up)
 
 ```bash
     ./scripts/kafka/start_again.sh
 ```
 
-5. Remove the cluster
+5. (Optional) Remove the cluster
 
 ```bash
     ./scripts/kafka/cleanup.sh
@@ -116,7 +116,9 @@ Select `Messages`, then on `offset` (next to `Jump to offset`) select `0` to sta
 
 Open Kafka Control Center at `http://localhost:9021`, `ksql`, then use the `Editor` to create streams as follow.
 
-***Verify if the values of KEY_SCHEMA_ID and VALUE_SCHEMA_ID are the same as in the `topic_dailyc19` topic***
+***Verify if the values of KEY_SCHEMA_ID is the same as the one in the `topic_dailyc19` topic***
+
+Make sure that `auto.offset.reset` is set to `Earliest` in the editor.
 
 ```SQL
     CREATE STREAM stream_dailyc19 (
@@ -280,9 +282,15 @@ Import all nodes and relationships
     ./scripts/neo4j/setup_kafka_node_connector.sh
 ```
 
-Wait until complete (approx 10 mins, check on neo4j if approx over 860K nodes imported)
+Wait until complete (approx 3-4 mins, depending on hardware configuration, check on neo4j if `854114` nodes were imported)
 ```bash
     ./scripts/neo4j/setup_kafka_rels_connector.sh
+```
+
+Then run post processing,
+
+```bash
+    ./scripts/neo4j/post_processing.sh
 ```
 
 4. Open Neo4j browser
@@ -473,13 +481,3 @@ Compute correlation (based on sum of squares of dfference in cases as population
 8. Using Neodash
 
 Open browser at `http://localhost:5005`, then connect to existing dashboard for preview.
-
-# F. Using Neo4j Desktop
-
-[Neo4j Desktop](https://neo4j.com/developer/neo4j-desktop/#what-is-neo4j-desktop) is a Developer IDE or Management Environment for Neo4j instances similar to Enterprise Manager, but better. You can manage as many projects and database servers locally as you like and also connect to remote Neo4j servers. *Neo4j Desktop comes with a free Developer License of Neo4j Enterprise Edition. The Java Runtime is also bundled.* It can be downloaded from [here](https://neo4j.com/download/).
-
-[Install and configure it](https://neo4j.com/download-thanks-desktop/) with a given `Activation Key`, don't install the example database.
-
-Click on the `New` button next to the `Projects` title, add a new project, and give it a name `Data Mesh PoC`, access to `Neo4j` instance `neo4j://localhost:7687` with `neo4j` and `phac2022` as credential.
-
-Click on the `Connect` button, then choose `Neo4j Browser` from the dropdown list, then you have access to Neo4j via browser. Now, repeat the step and choose `Neo4j Bloom`.

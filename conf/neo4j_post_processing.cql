@@ -87,8 +87,6 @@ CALL apoc.periodic.iterate("
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Compute clusters
 
-CALL gds.graph.drop('correlatedCounties');
-
 CALL gds.graph.project(
     'correlatedCounties',
     'County',
@@ -107,7 +105,6 @@ YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory;
 
 CALL gds.louvain.write('correlatedCounties', { writeProperty: 'community' })
 YIELD communityCount, modularity, modularities;
-```
 
 MATCH (c:County)
 WITH DISTINCT(c.community) AS community, COUNT(*) AS count
