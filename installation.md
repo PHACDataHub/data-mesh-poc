@@ -278,7 +278,7 @@ Import all nodes and relationships
     ./scripts/neo4j/setup_kafka_node_connector.sh
 ```
 
-Wait until complete
+Wait until complete (approx 10 mins, check on neo4j if approx over 860K nodes imported)
 ```
     ./scripts/neo4j/setup_kafka_rels_connector.sh
 ```
