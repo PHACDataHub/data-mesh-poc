@@ -137,7 +137,7 @@ Kafka is an open source project with an open governance under the Apache foundat
 
 The following [Data Streaming Landscape 2023](https://www.kai-waehner.de/blog/2022/12/21/data-streaming-landscape-2023/) summarizes the current status of relevant products and cloud services:
 
-![Data streaming landscape 2023](../images/screen-captured/data-consistency-with-kafka.png)
+![Data streaming landscape 2023](../images/screen-captured/data-streaming-landscape-2023.png)
 
 ### IV.3.a The Kafka Cluster
 
