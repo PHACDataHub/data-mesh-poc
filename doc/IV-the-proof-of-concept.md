@@ -108,9 +108,36 @@ Of course, you can reinstall Docker Engine and Docker Compose by running.
 
 ## IV.3. The Streaming Infrastructure
 
-An event stream is an unbounded sequence of events. An event captures that something has happened. For example, it could be a customer buying a car, a plane landing, or a sensor triggering. In real life, events happen constantly and, in most industries, businesses are reacting to these events in real time to make decisions. So event streams are a great abstraction as new events are added to the stream as they happen. Event streaming systems provide mechanisms to process and distribute events in real time and store them durably so they can be replayed later.
+[Data consistency](https://www.kai-waehner.de/blog/2022/12/27/apache-kafka-for-data-consistency-and-real-time-data-streaming/) refers to *whether the same data kept at different places does or does not match*. The data is processed in many ways across the enterprise architecture:
+- Real-time: Message brokers or data streaming platforms transfer or process data when it is in motion.
+- Near real-time: Platforms ingest data into data lakes and data warehouses in seconds or minutes.
+- Batch: Reporting and analytics of historical data.
+- Request-response: Interactive API or SQL queries to collect specific information.
+- A point-in-time replay of historical data: Troubleshooting, incident management, regulatory reporting, and similar scenarios.
+
+The applications and data platforms use very different (old and new) technologies, products, cloud services, and APIs. Integration and data consistency across the different communication paradigms is a massive challenge within the **spaghetti enterprise architecture**:
+
+![Spaghetti architecture](../images/screen-captured/spaghetti-enterprise-architecture.png)
+
+The consequence of inconsistent data is obvious:
+- Bad customer experience, e.g., late notification about flight delays or cancellations.
+- Revenue loss, e.g., inventory not up-to-date, missed or too late detection of fraud.
+- Increased cost, e.g., slow or wrong decisions in logistics across the supply chain.
+- Increased risk, e.g., unrecognized data breaches, compliance issues.
+
+This is where Apache Kafka makes the differenc: **streaming platform to decouple any application and communication paradigm**
+
+Kafka is an append-only commit log. Consumers are independent of each other and independent of producers. They *interact at their own pace with their own communication paradigm and pull the information from the Kafka log*. This enables independent consumption and processing of data consistently. It does not matter what technology or communication paradigm the downstream consumer application uses:
+
+![Data consistency with Kafka](../images/screen-captured/data-consistency-with-kafka.png)
+
+An **event stream** is an unbounded sequence of events. An event captures that something has happened. For example, it could be a customer buying a car, a plane landing, or a sensor triggering. In real life, events happen constantly and, in most industries, businesses are reacting to these events in real time to make decisions. So event streams are a great abstraction as new events are added to the stream as they happen. Event streaming systems provide mechanisms to process and distribute events in real time and store them durably so they can be replayed later.
 
 Kafka is an open source project with an open governance under the Apache foundation. It is distributed, scalable, and able to handle very high throughput with high availability. It provides low latency and unique characteristics make it ideal for handling streams of events. Finally the various components of the project create a robust and flexible platform to build data systems.
+
+The following [Data Streaming Landscape 2023](https://www.kai-waehner.de/blog/2022/12/21/data-streaming-landscape-2023/) summarizes the current status of relevant products and cloud services:
+
+![Data streaming landscape 2023](../images/screen-captured/data-consistency-with-kafka.png)
 
 ### IV.3.a The Kafka Cluster
 
