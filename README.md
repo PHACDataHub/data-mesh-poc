@@ -9,7 +9,7 @@ In the [first part](#the-imaginative-case), an *imaginative case* is defined, wh
 
 In the [second part](#traditional-approaches), the *imaginative case* then is used to discuss traditional approaches that might have been used to design, develop, and deploy an IT infrastructure to support the execution of the case. Common pitfalls, apparent problems, and emerging risks are identified and analyzed to see why they can surface often in similar problem context.
 
-In the [third part]](#a-short-summary-of-data-mesh), we discuss briefly the Data Mesh architechtural principles and its patterns. All of the content are summaries from the book [*Data Mesh, Delivering Data-Driven Value at Scale, Zhamak Dehghani.*](https://www.starburst.io/info/oreilly-data-mesh/)
+In the [third part](#a-short-summary-of-data-mesh), we discuss briefly the Data Mesh architechtural principles and its patterns. All of the content are summaries from the book [*Data Mesh, Delivering Data-Driven Value at Scale, Zhamak Dehghani.*](https://www.starburst.io/info/oreilly-data-mesh/)
 
 In the [fourth part](#a-short-summary-of-data-mesh), a concrete dataset, a set of software tools, and a step-by-step guide how to install, configure, and monitor them are put together for a Proof-of-Concept (PoC) of **Data Mesh** architecture principles and proven practices on how to solve problems similar to the *imaginative case* without repeating the pitfalls, problems, and risks of the traditional convenient, time-consuming and costly human effort approach. In addition, different deployment scenarios are explained briefly how the PoC can be demonstrated due to constraints or availabilities of  resources.
 
